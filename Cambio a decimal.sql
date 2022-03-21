@@ -1,0 +1,49 @@
+BEGIN TRANSACTION
+
+-- ALTERAMOS LAS TABLAS YA CREADAS
+
+ALTER TABLE dbo.descuentos ALTER COLUMN precioDescuento DECIMAL(7,2);
+
+--ALTER TABLE dbo.notas_credito ALTER COLUMN monto DECIMAL(7,2);
+
+--ALTER TABLE dbo.notas_credito ALTER COLUMN montoPagado DECIMAL(7,2) NOT NULL;
+
+ALTER TABLE dbo.productos ALTER COLUMN precio DECIMAL(7,2) NOT NULL;
+
+--ALTER TABLE dbo.registro_notas_credito ALTER COLUMN precio DECIMAL(7,2) NOT NULL;
+
+--ALTER TABLE dbo.registro_notas_credito ALTER COLUMN importe DECIMAL(7,2) NOT NULL;
+
+ALTER TABLE dbo.venta ALTER COLUMN venta DECIMAL(7,2) NOT NULL;
+
+ALTER TABLE dbo.venta_dia ALTER COLUMN inicio DECIMAL(7,2) NOT NULL;
+
+ALTER TABLE dbo.venta_dia ALTER COLUMN monedas DECIMAL(7,2) NOT NULL;
+
+ALTER TABLE dbo.venta_dia ALTER COLUMN uso_monedas DECIMAL(7,2) NOT NULL;
+
+ALTER TABLE dbo.venta_dia ALTER COLUMN proveedores DECIMAL(7,2) NOT NULL;
+
+ALTER TABLE dbo.venta_dia ALTER COLUMN gasto DECIMAL(7,2) NOT NULL;
+
+ALTER TABLE dbo.venta_dia ALTER COLUMN quedo DECIMAL(7,2) NOT NULL;
+
+ALTER TABLE dbo.venta_dia ALTER COLUMN saldo_inicial DECIMAL(7,2) NOT NULL;
+
+ALTER TABLE dbo.venta_dia ALTER COLUMN saldo_final DECIMAL(7,2) NOT NULL;
+
+ALTER TABLE dbo.venta_dia ALTER COLUMN caja DECIMAL(7,2) NOT NULL;
+
+ALTER TABLE dbo.venta_dia ALTER COLUMN venta_saldo DECIMAL(7,2) NOT NULL;
+
+ALTER TABLE dbo.venta_dia ALTER COLUMN venta_abarrote DECIMAL(7,2) NOT NULL;
+
+ALTER TABLE dbo.venta_dia ALTER COLUMN total DECIMAL(7,2) NOT NULL;
+
+ALTER TABLE dbo.venta_dia ALTER COLUMN final DECIMAL(7,2) NOT NULL;
+
+-- AGREGAMOS COLUMNA A TABLA
+
+ALTER TABLE dbo.productos ADD fechaultact DATETIME;
+
+COMMIT;

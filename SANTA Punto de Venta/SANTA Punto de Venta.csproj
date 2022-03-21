@@ -8,10 +8,26 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>SANTA_Punto_de_Venta</RootNamespace>
     <AssemblyName>SANTA Punto de Venta</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -22,6 +38,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -31,29 +48,229 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>logo.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Form1.cs">
+    <Compile Include="Acceso.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Acceso.Designer.cs">
+      <DependentUpon>Acceso.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Accion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Accion.Designer.cs">
+      <DependentUpon>Accion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Accion_Productos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Accion_Productos.Designer.cs">
+      <DependentUpon>Accion_Productos.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Asignacion_Contraseña.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Asignacion_Contraseña.Designer.cs">
+      <DependentUpon>Asignacion_Contraseña.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Añadir_Cantidad.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Añadir_Cantidad.Designer.cs">
+      <DependentUpon>Añadir_Cantidad.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Añadir_Categoria.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Añadir_Categoria.Designer.cs">
+      <DependentUpon>Añadir_Categoria.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Añadir_Producto.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Añadir_Producto.Designer.cs">
+      <DependentUpon>Añadir_Producto.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Buscar_Producto.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Buscar_Producto.Designer.cs">
+      <DependentUpon>Buscar_Producto.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Clientes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Clientes.Designer.cs">
+      <DependentUpon>Clientes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ConexionDBSeleccion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConexionDBSeleccion.Designer.cs">
+      <DependentUpon>ConexionDBSeleccion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Contraseña.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Contraseña.Designer.cs">
+      <DependentUpon>Contraseña.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Correos.cs" />
+    <Compile Include="Editar_Producto.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Editar_Producto.Designer.cs">
+      <DependentUpon>Editar_Producto.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FlexibleMessageBox.cs" />
+    <Compile Include="Main.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Main.Designer.cs">
+      <DependentUpon>Main.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Nota_Credito.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Nota_Credito.Designer.cs">
+      <DependentUpon>Nota_Credito.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Notificaciones.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Notificaciones.Designer.cs">
+      <DependentUpon>Notificaciones.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Productos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Productos.Designer.cs">
+      <DependentUpon>Productos.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Productos_Cero.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Productos_Cero.Designer.cs">
+      <DependentUpon>Productos_Cero.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Productos_Inactivos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Productos_Inactivos.Designer.cs">
+      <DependentUpon>Productos_Inactivos.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RawPrinterHelper.cs" />
+    <Compile Include="Registro_Nota_Credito.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Registro_Nota_Credito.Designer.cs">
+      <DependentUpon>Registro_Nota_Credito.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Requisición_Producto.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Requisición_Producto.Designer.cs">
+      <DependentUpon>Requisición_Producto.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Ticket.cs" />
+    <Compile Include="Usuarios.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Usuarios.Designer.cs">
+      <DependentUpon>Usuarios.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Utilerias.cs" />
+    <Compile Include="Ventas.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Ventas.Designer.cs">
+      <DependentUpon>Ventas.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Ventas_Hechas.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Ventas_Hechas.Designer.cs">
+      <DependentUpon>Ventas_Hechas.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Venta_Dia.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Venta_Dia.Designer.cs">
+      <DependentUpon>Venta_Dia.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Acceso.resx">
+      <DependentUpon>Acceso.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Accion.resx">
+      <DependentUpon>Accion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Accion_Productos.resx">
+      <DependentUpon>Accion_Productos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Asignacion_Contraseña.resx">
+      <DependentUpon>Asignacion_Contraseña.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Añadir_Cantidad.resx">
+      <DependentUpon>Añadir_Cantidad.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Añadir_Categoria.resx">
+      <DependentUpon>Añadir_Categoria.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Añadir_Producto.resx">
+      <DependentUpon>Añadir_Producto.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Buscar_Producto.resx">
+      <DependentUpon>Buscar_Producto.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Clientes.resx">
+      <DependentUpon>Clientes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConexionDBSeleccion.resx">
+      <DependentUpon>ConexionDBSeleccion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Contraseña.resx">
+      <DependentUpon>Contraseña.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editar_Producto.resx">
+      <DependentUpon>Editar_Producto.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Main.resx">
+      <DependentUpon>Main.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Nota_Credito.resx">
+      <DependentUpon>Nota_Credito.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Notificaciones.resx">
+      <DependentUpon>Notificaciones.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Productos.resx">
+      <DependentUpon>Productos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Productos_Cero.resx">
+      <DependentUpon>Productos_Cero.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Productos_Inactivos.resx">
+      <DependentUpon>Productos_Inactivos.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -62,7 +279,26 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Registro_Nota_Credito.resx">
+      <DependentUpon>Registro_Nota_Credito.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Requisición_Producto.resx">
+      <DependentUpon>Requisición_Producto.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Usuarios.resx">
+      <DependentUpon>Usuarios.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ventas.resx">
+      <DependentUpon>Ventas.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ventas_Hechas.resx">
+      <DependentUpon>Ventas_Hechas.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Venta_Dia.resx">
+      <DependentUpon>Venta_Dia.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -75,6 +311,85 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.6.1 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\add-1-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\logo.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\edit-file-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Files-2-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\add-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\stat-icon %281%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Actions-edit-undo-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Actions-edit-delete-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icon-requests-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\cout-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\statistics-market-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\cart-add-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\check-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\market-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\market-flow-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="logo.ico" />
+    <None Include="Resources\messages-icon.png" />
+    <None Include="Resources\Other-Notifications-Metro-icon.png" />
+    <None Include="Resources\Actions-edit-redo-icon %281%29.png" />
+    <None Include="Resources\shop-cart-add-icon %281%29.png" />
+    <None Include="Resources\shop-cart-add-icon.png" />
+    <None Include="Resources\Actions-edit-redo-icon.png" />
+    <None Include="Resources\62882-credit-card-icon.png" />
+    <None Include="Resources\Users-icon %281%29.png" />
+    <None Include="Resources\Admin-icon.png" />
+    <None Include="Resources\Lock-Unlock-icon.png" />
+    <None Include="Resources\Users-icon.png" />
+    <None Include="Resources\modify-key-icon.png" />
+    <None Include="Resources\Apps-preferences-desktop-user-password-icon.png" />
+    <None Include="Resources\Actions-window-close-icon.png" />
+    <None Include="Resources\person-icon.png" />
+    <None Include="Resources\Ecommerce-Discount-icon.png" />
+    <None Include="Resources\Close-2-icon.png" />
+    <None Include="Resources\Status-dialog-error-icon.png" />
+    <None Include="Resources\calculator-icon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

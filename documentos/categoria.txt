@@ -1,0 +1,17 @@
+Refresco
+Aparador
+Abarrotes
+Lácteos
+Galleta/Pastel
+Papas
+Papelería
+Servicio
+Refrigerador
+Cigarro
+Verdura 
+Saldo
+Congelador
+Pan
+Especias
+Especiales
+pruebas
