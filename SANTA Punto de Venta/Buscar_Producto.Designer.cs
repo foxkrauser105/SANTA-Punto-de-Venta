@@ -270,6 +270,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Buscar Producto";
             this.Load += new System.EventHandler(this.Buscar_Producto_Load);
+            this.Shown += new System.EventHandler(this.Buscar_Producto_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLogo)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewProductos)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewProductosAgregados)).EndInit();

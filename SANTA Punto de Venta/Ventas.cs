@@ -39,6 +39,8 @@ namespace SANTA_Punto_de_Venta
             dt.Columns.Add("Cantidad", typeof(float));
             dt.Columns.Add("Importe", typeof(decimal));
 
+            dataGridViewVenta.DataSource = dt;
+
             buttonCompra.Enabled = false;
             buttonAñadir.Enabled = false;
             labelResta.Visible = false;
@@ -51,18 +53,13 @@ namespace SANTA_Punto_de_Venta
             buttonActualizarNota.Enabled = false;
             buttonAgregarNota.Enabled = false;
 
-            //dataGridViewVenta.Columns.Add("codigo", "Código");
-            //dataGridViewVenta.Columns.Add("nombre", "Nombre");
-            //dataGridViewVenta.Columns.Add("precio", "Precio");
-            //dataGridViewVenta.Columns.Add("cantidad", "Cantidad");
-            //dataGridViewVenta.Columns.Add("importe", "Importe");
-
-            //dataGridViewVenta.AutoResizeColumns();
-            //dataGridViewVenta.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            //dataGridViewVenta.Columns[0].ReadOnly = true;
-            //dataGridViewVenta.Columns[1].ReadOnly = true;
-            //dataGridViewVenta.Columns[2].ReadOnly = true;
-            //dataGridViewVenta.Columns[4].ReadOnly = true;
+            dataGridViewVenta.AutoResizeColumns();
+            dataGridViewVenta.Columns[1].Width = 400;
+            dataGridViewVenta.Columns[dataGridViewVenta.Columns.Count - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dataGridViewVenta.Columns[0].ReadOnly = true;
+            dataGridViewVenta.Columns[1].ReadOnly = true;
+            dataGridViewVenta.Columns[2].ReadOnly = true;
+            dataGridViewVenta.Columns[4].ReadOnly = true;
 
             textBoxCodigo.Focus();
         }
@@ -203,32 +200,26 @@ namespace SANTA_Punto_de_Venta
                     {
                         openCon.Open();
                         SqlTransaction transaction = openCon.BeginTransaction();
-                        SqlDataAdapter select = new SqlDataAdapter("SELECT p.id_producto, p.nombre, IIF( " + dataGridViewVenta.Rows[e.RowIndex].Cells[3].Value.ToString() + " >= d.cantidadMinima AND d.status = 1, d.precioDescuento, p.precio ) precio, " +
-                                                                    "IIF( " + dataGridViewVenta.Rows[e.RowIndex].Cells[3].Value.ToString() + " >= d.cantidadMinima AND d.status = 1, 'Si', 'No' ) descuento " +
-                                                                    "FROM  productos p " +
-                                                                    "LEFT OUTER JOIN descuentos d " +
-                                                                    "ON    p.id_producto = d.id_producto " +
-                                                                    "WHERE p.id_producto = '" + dataGridViewVenta.Rows[e.RowIndex].Cells[0].Value.ToString() + "'", openCon);
-                        select.SelectCommand.Transaction = transaction;
 
-                        DataTable dtVenta = new DataTable();
-                        select.Fill(dtVenta); 
+                        DataTable dtVenta = new Utilerias().ejecutaComando("SELECT p.id_producto, p.nombre, IIF( @iCantMinima >= d.cantidadMinima AND d.status = 1, d.precioDescuento, p.precio ) precio, " +
+                                                                           "IIF( @iCantMinima >= d.cantidadMinima AND d.status = 1, 'Si', 'No' ) descuento " +
+                                                                           "FROM  productos p " +
+                                                                           "LEFT JOIN descuentos d " +
+                                                                           "ON    p.id_producto = d.id_producto " +
+                                                                           "WHERE p.id_producto = @iProducto",
+                                                                           CommandType.Text,
+                                                                           openCon,
+                                                                           transaction,
+                                                                           "",
+                                                                           new object[] { "@iCantMinima", double.Parse(dataGridViewVenta.Rows[e.RowIndex].Cells[3].Value.ToString()) },
+                                                                           new object[] { "@iProducto", dataGridViewVenta.Rows[e.RowIndex].Cells[0].Value.ToString() });
                          
                         if (dtVenta.Rows.Count > 0)
                         {
 
-                            if (dtVenta.Rows[0][3].ToString().Equals("Si"))
-                            {
-                                dataGridViewVenta.Rows[e.RowIndex].Cells[2].Style.ForeColor = Color.Green;
-                                dataGridViewVenta.Rows[e.RowIndex].Cells[3].Style.ForeColor = Color.Green;
-                                dataGridViewVenta.Rows[e.RowIndex].Cells[4].Style.ForeColor = Color.Green;
-                            }
-                            else
-                            {
-                                dataGridViewVenta.Rows[e.RowIndex].Cells[2].Style.ForeColor = Color.White;
-                                dataGridViewVenta.Rows[e.RowIndex].Cells[3].Style.ForeColor = Color.White;
-                                dataGridViewVenta.Rows[e.RowIndex].Cells[4].Style.ForeColor = Color.White;
-                            }
+                            dataGridViewVenta.Rows[e.RowIndex].Cells[2].Style.ForeColor = dtVenta.Rows[0][3].ToString().Equals("Si") ? Color.Green : Color.White;
+                            dataGridViewVenta.Rows[e.RowIndex].Cells[3].Style.ForeColor = dtVenta.Rows[0][3].ToString().Equals("Si") ? Color.Green : Color.White;
+                            dataGridViewVenta.Rows[e.RowIndex].Cells[4].Style.ForeColor = dtVenta.Rows[0][3].ToString().Equals("Si") ? Color.Green : Color.White;
 
                             dataGridViewVenta.Rows[e.RowIndex].Cells[2].Value = decimal.Round(decimal.Parse(dtVenta.Rows[0][2].ToString()), 2);
                             dataGridViewVenta.Rows[e.RowIndex].Cells[4].Value = decimal.Round(decimal.Parse(dtVenta.Rows[0][2].ToString()) * decimal.Parse(dataGridViewVenta.Rows[e.RowIndex].Cells[3].Value.ToString()), 2);
@@ -316,11 +307,9 @@ namespace SANTA_Punto_de_Venta
 
         public void limpiar()
         {
-            int rows = dataGridViewVenta.RowCount;
-            for (int i = 0; i < rows; i++)
-            {
-                dataGridViewVenta.Rows.RemoveAt(0);
-            }
+            
+            dt.Rows.Clear();
+
             labelSuma.Text = "0.00";
             buttonCompra.Enabled = false;
             textBoxPago.Text = "";
@@ -531,10 +520,9 @@ namespace SANTA_Punto_de_Venta
                 if (dataGridViewVenta.Rows[i].Cells[0].Value.ToString().ToUpper().Equals(textBoxCodigo.Text.ToUpper()))
                 {
                     cantSumar += double.Parse(dataGridViewVenta.Rows[i].Cells[3].Value.ToString());
+                    break;
                 }
             }
-
-            double cantidad = cantSumar;
 
             try
             {
@@ -543,16 +531,19 @@ namespace SANTA_Punto_de_Venta
                     openCon.Open();
                     SqlTransaction transaction = openCon.BeginTransaction();
 
-                    SqlDataAdapter select = new SqlDataAdapter(new SqlCommand("SELECT p.id_producto, p.nombre, IIF( " + cantidad.ToString() + " >= d.cantidadMinima AND d.status = 1, d.precioDescuento, p.precio ) precio, " +
-                                                                              "IIF( " + cantidad.ToString() + " >= d.cantidadMinima AND d.status = 1, 'Si', 'No' ) descuento, p.status " +
-                                                                              "FROM  productos p " +
-                                                                              "LEFT OUTER JOIN descuentos d " +
-                                                                              "ON    p.id_producto = d.id_producto " +
-                                                                              "WHERE p.id_producto = '" + textBoxCodigo.Text + "'", openCon, transaction));
-
-                    DataTable dtVenta = new DataTable();
-                    select.Fill(dtVenta);
-
+                    DataTable dtVenta = new Utilerias().ejecutaComando("SELECT p.id_producto, p.nombre, IIF( @iCantMinima >= d.cantidadMinima AND d.status = 1, d.precioDescuento, p.precio ) precio, " +
+                                                                       "IIF( @iCantMinima >= d.cantidadMinima AND d.status = 1, 'Si', 'No' ) descuento, " +
+                                                                       "p.status " +
+                                                                       "FROM  productos p " +
+                                                                       "LEFT JOIN descuentos d " +
+                                                                       "ON    p.id_producto = d.id_producto " +
+                                                                       "WHERE p.id_producto = @iProducto",
+                                                                       CommandType.Text,
+                                                                       openCon,
+                                                                       transaction,
+                                                                       "",
+                                                                       new object[] { "@iCantMinima", double.Parse(cantSumar.ToString()) },
+                                                                       new object[] { "@iProducto", textBoxCodigo.Text });
 
                     if (dtVenta.Rows.Count > 0)
                     {
@@ -571,8 +562,8 @@ namespace SANTA_Punto_de_Venta
                                 if (dataGridViewVenta.Rows[i].Cells[0].Value.ToString().ToUpper().Equals(textBoxCodigo.Text.ToUpper()))
                                 {
                                     dataGridViewVenta.Rows[i].Cells[2].Value = decimal.Round(decimal.Parse(dtVenta.Rows[0][2].ToString()), 2);
-                                    dataGridViewVenta.Rows[i].Cells[3].Value = cantidad;
-                                    dataGridViewVenta.Rows[i].Cells[4].Value = decimal.Round(decimal.Parse(dtVenta.Rows[0][2].ToString()) * decimal.Parse(cantidad.ToString()), 2);
+                                    dataGridViewVenta.Rows[i].Cells[3].Value = cantSumar;
+                                    dataGridViewVenta.Rows[i].Cells[4].Value = decimal.Round(decimal.Parse(dtVenta.Rows[0][2].ToString()) * decimal.Parse(cantSumar.ToString()), 2);
                                     calculaPrecio();
                                     enter = false;
 
@@ -597,8 +588,8 @@ namespace SANTA_Punto_de_Venta
                                 dt.Rows.Add(dtVenta.Rows[0][0].ToString(),
                                             dtVenta.Rows[0][1].ToString(),
                                             decimal.Round(decimal.Parse(dtVenta.Rows[0][2].ToString()), 2),
-                                            cantidad,
-                                            decimal.Round(decimal.Parse(dtVenta.Rows[0][2].ToString()) * decimal.Parse(cantidad.ToString()), 2)
+                                            cantSumar,
+                                            decimal.Round(decimal.Parse(dtVenta.Rows[0][2].ToString()) * decimal.Parse(cantSumar.ToString()), 2)
                                             );
 
                                 dataGridViewVenta.DataSource = dt;
@@ -670,82 +661,57 @@ namespace SANTA_Punto_de_Venta
                 try
                 {
 
-                    using (SqlCommand queryAdd = new SqlCommand("INSERT INTO venta (venta,  fecha) " +
-                                                                "VALUES            (@venta, @fecha)", openCon, transaction))
-                    {
-                        
-                        queryAdd.Parameters.Add("@venta", SqlDbType.Decimal).Value = labelSuma.Text;
-                        queryAdd.Parameters.Add("@fecha", SqlDbType.Date).Value = DateTime.Now;
-
-                        queryAdd.ExecuteNonQuery();
-
-                    }
-
-                    SqlDataAdapter select = new SqlDataAdapter(new SqlCommand("SELECT MAX(id_venta) " +
-                                                                              "FROM   venta", openCon, transaction));
-
-                    DataTable dtVenta = new DataTable();
-                    select.Fill(dtVenta);
+                    DataTable dtVenta = new Utilerias().ejecutaComando("INSERT INTO venta (venta,  fecha) " +
+                                                                       "OUTPUT INSERTED.id_venta " +
+                                                                       "VALUES            (@venta, @fecha)",
+                                                                       CommandType.Text,
+                                                                       openCon,
+                                                                       transaction,
+                                                                       "",
+                                                                       new object[] { "@venta", decimal.Parse(labelSuma.Text) },
+                                                                       new object[] { "@fecha", DateTime.Now.Date });
 
                     for (int i = 0; i < dataGridViewVenta.RowCount; i++)
                     {
-                        using (SqlCommand queryAdd = new SqlCommand("INSERT INTO registro_ventas (id_venta,  id_producto,  precio, " +
-                                                                    "                             cantidad,  descuento) " +
-                                                                    "VALUES                      (@id_venta, @id_producto, @precio, " +
-                                                                    "                             @cantidad, @descuento)", openCon, transaction))
+
+                        new Utilerias().ejecutaComando("INSERT INTO registro_ventas (id_venta,  id_producto,  precio, " +
+                                                       "                             cantidad,  descuento) " +
+                                                       "VALUES                      (@id_venta, @id_producto, @precio, " +
+                                                       "                             @cantidad, @descuento)",
+                                                       CommandType.Text,
+                                                       openCon,
+                                                       transaction,
+                                                       "",
+                                                       new object[] { "@id_venta", int.Parse(dtVenta.Rows[0][0].ToString()) },
+                                                       new object[] { "@id_producto", dataGridViewVenta.Rows[i].Cells[0].Value.ToString() },
+                                                       new object[] { "@precio", decimal.Parse(dataGridViewVenta.Rows[i].Cells[2].Value.ToString()) },
+                                                       new object[] { "@cantidad", float.Parse(dataGridViewVenta.Rows[i].Cells[3].Value.ToString()) },
+                                                       new object[] { "@descuento", dataGridViewVenta.Rows[i].Cells[2].Style.ForeColor == Color.Green ? 1 : 0  });
+
+                        DataTable dtCantidad = new Utilerias().ejecutaComando("UPDATE productos " +
+                                                                              "SET    cantidad    = Iif(cantidad - @cantidad <= 0, 0, cantidad - @cantidad) " +
+                                                                              "OUTPUT INSERTED.cantidad " +
+                                                                              "WHERE  id_producto = @id_producto",
+                                                                              CommandType.Text,
+                                                                              openCon,
+                                                                              transaction,
+                                                                              "",
+                                                                              new object[] { "@cantidad", double.Parse(dataGridViewVenta.Rows[i].Cells[3].Value.ToString()) },
+                                                                              new object[] { "@id_producto", dataGridViewVenta.Rows[i].Cells[0].Value.ToString() });
+
+                        if (double.Parse(dtCantidad.Rows[0][0].ToString()) <= 0)
                         {
-                            
-                            queryAdd.Parameters.Add("@id_venta",    SqlDbType.Int).Value     = dtVenta.Rows[0][0].ToString();
-                            queryAdd.Parameters.Add("@id_producto", SqlDbType.VarChar).Value = dataGridViewVenta.Rows[i].Cells[0].Value.ToString();
-                            queryAdd.Parameters.Add("@precio",      SqlDbType.Decimal).Value = dataGridViewVenta.Rows[i].Cells[2].Value.ToString();   
-                            queryAdd.Parameters.Add("@cantidad",    SqlDbType.Float).Value   = dataGridViewVenta.Rows[i].Cells[3].Value.ToString(); 
 
-                            if (dataGridViewVenta.Rows[i].Cells[2].Style.ForeColor == Color.Green)
-                            {
-                                queryAdd.Parameters.Add("@descuento", SqlDbType.Float).Value = 1;
-                            }
-                            else
-                            {
-                                queryAdd.Parameters.Add("@descuento", SqlDbType.Float).Value = 0;
-                            }
+                            lista += "- " + dataGridViewVenta.Rows[i].Cells[1].Value.ToString() + "\n";
+                            listaCorreo += "- " + dataGridViewVenta.Rows[i].Cells[1].Value.ToString() + "<br>";
 
-                            queryAdd.ExecuteNonQuery();
-                        }
-
-                        using (SqlCommand queryUpdate = new SqlCommand("UPDATE productos " +
-                                                                       "SET    cantidad    = @cantidad " +
-                                                                       "WHERE  id_producto = @id_producto", openCon, transaction))
-                        {
-                            
-                            SqlDataAdapter selectCant = new SqlDataAdapter(new SqlCommand("SELECT cantidad " +
-                                                                                          "FROM   productos " +
-                                                                                          "WHERE  id_producto = '" + dataGridViewVenta.Rows[i].Cells[0].Value.ToString() + "'", openCon, transaction));
-
-                            DataTable dtCantidad = new DataTable();
-                            selectCant.Fill(dtCantidad);
-
-                            double cantNueva = double.Parse(dtCantidad.Rows[0][0].ToString()) - double.Parse(dataGridViewVenta.Rows[i].Cells[3].Value.ToString());
-
-                            if (cantNueva < 0)
-                            {
-                                cantNueva = 0;
-
-                                lista += "- " + dataGridViewVenta.Rows[i].Cells[1].Value.ToString() + "\n";
-                                listaCorreo += "- " + dataGridViewVenta.Rows[i].Cells[1].Value.ToString() + "<br>";
-
-                            }
-
-                            queryUpdate.Parameters.Add("@cantidad",    SqlDbType.Float).Value   = cantNueva;
-                            queryUpdate.Parameters.Add("@id_producto", SqlDbType.VarChar).Value = dataGridViewVenta.Rows[i].Cells[0].Value.ToString();
-
-                            queryUpdate.ExecuteNonQuery();
                         }
 
                     }
 
                     transaction.Commit();
 
-                    if (!lista.Equals(""))
+                    if (Properties.Settings.Default.SendEmailNoProduct && !lista.Equals(""))
                     {
                         Thread tCorreo = new Thread(new ThreadStart(new Correos(listaCorreo, null).correoVenta));
                         tCorreo.Start();
@@ -762,10 +728,10 @@ namespace SANTA_Punto_de_Venta
                     limpiar();
 
                 }
-                catch (SqlException)
+                catch (SqlException ex)
                 {
                     transaction.Rollback();
-                    MessageBox.Show("Ha ocurrido un error. Verifica lo siguiente:\n\n- Verifica si la base de datos está en linea\n- Verifica los datos a grabar. No se realizó venta", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);                 
+                    MessageBox.Show("Ha ocurrido un error. Verifica lo siguiente:\n\n- Verifica si la base de datos está en linea\n- Verifica los datos a grabar. No se realizó venta " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);                 
                 }
             }
         }

@@ -45,47 +45,24 @@ namespace SANTA_Punto_de_Venta
 
         private void Buscar_Producto_Load(object sender, EventArgs e)
         {
-            try
+            using (SqlConnection openCon = new SqlConnection(Properties.Settings.Default.SANTA_Connection)) 
             {
-                using (SqlConnection openCon = new SqlConnection(Properties.Settings.Default.SANTA_Connection))
-                {
-                    openCon.Open();
-                    SqlTransaction transaction = openCon.BeginTransaction();
+                openCon.Open();
+                SqlTransaction transaction = openCon.BeginTransaction();
 
-                    SqlDataAdapter select = new SqlDataAdapter("SELECT id_producto Código, nombre Nombre, precio Precio " +
-                                                               "FROM   productos " +
-                                                               "ORDER BY id_producto", openCon);
-                    select.SelectCommand.Transaction = transaction;
-                    select.Fill(dtProductos);
+                try
+                {
+                    
+
+                    dtProductos = new Utilerias().ejecutaComando("SELECT id_producto Código, nombre Nombre, precio Precio " +
+                                                                 "FROM   productos " +
+                                                                 "WHERE  status = 1 " +
+                                                                 "ORDER BY id_producto",
+                                                                 CommandType.Text,
+                                                                 openCon,
+                                                                 transaction);
 
                     dataGridViewProductos.DataSource = dtProductos;
-
-                    //if (dataGridViewProductos.RowCount > 0)
-                    //{
-                    //    dataGridViewProductos.Columns[0].HeaderText = "Código";
-                    //    dataGridViewProductos.Columns[1].HeaderText = "Nombre";
-                    //    dataGridViewProductos.Columns[2].HeaderText = "Precio";
-
-                        
-                    //}
-
-                    //if(dataGridViewProductos.RowCount == 0)
-                    //{
-                    //    dataGridViewProductos.Columns.Add("codigo", "Código");
-                    //    dataGridViewProductos.Columns.Add("nombre", "Nombre");
-                    //    dataGridViewProductos.Columns.Add("precio", "Precio");
-                    //}
-
-                    /*if(dataGridViewProductos.RowCount > 0)
-                    {
-                        dataGridViewProductos.Columns[0].HeaderText = "Código";
-                        dataGridViewProductos.Columns[1].HeaderText = "Nombre";
-                        dataGridViewProductos.Columns[2].HeaderText = "Precio";
-
-                        
-                        //dataGridViewProductos.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-
-                    }*/
 
                     dataGridViewProductos.AutoResizeColumns();
 
@@ -99,9 +76,10 @@ namespace SANTA_Punto_de_Venta
                     textBoxBuscar.Focus();
                     textBoxBuscar.Text = buscar;
                 }
+                catch (SqlException) { MessageBox.Show("Ha ocurrido un problema. Verifica lo siguiente: \n\n- Verifica la conexión a la base de datos y prueba de nuevo", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+                catch (ArgumentOutOfRangeException) { MessageBox.Show("Ha ocurrido un problema. Verifica lo siguiente: \n\n- Verifica que la base de datos no haya sido modificada en sus tablas y prueba de nuevo", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
             }
-            catch (SqlException) { MessageBox.Show("Ha ocurrido un problema. Verifica lo siguiente: \n\n- Verifica la conexión a la base de datos y prueba de nuevo", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
-            catch (ArgumentOutOfRangeException) { MessageBox.Show("Ha ocurrido un problema. Verifica lo siguiente: \n\n- Verifica que la base de datos no haya sido modificada en sus tablas y prueba de nuevo", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+            
         }
 
         private void textBoxBuscar_TextChanged(object sender, EventArgs e)
@@ -204,6 +182,20 @@ namespace SANTA_Punto_de_Venta
             {
                 e.Handled = true;
             }
+        }
+
+        private void Buscar_Producto_Shown(object sender, EventArgs e)
+        {
+
+            if (dataGridViewProductos.Rows.Count == 1)
+            {
+                dataGridViewProductosAgregados.Rows.Add(dataGridViewProductos.Rows[0].Cells[0].Value.ToString(),
+                                                        dataGridViewProductos.Rows[0].Cells[1].Value.ToString(),
+                                                        dataGridViewProductos.Rows[0].Cells[2].Value.ToString());
+
+                buttonAceptar.PerformClick();
+            }
+
         }
     }
 }

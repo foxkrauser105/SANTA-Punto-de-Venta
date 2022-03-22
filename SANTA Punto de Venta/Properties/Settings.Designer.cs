@@ -32,5 +32,14 @@ namespace SANTA_Punto_de_Venta.Properties {
                 return ((string)(this["SANTA_Connection"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SendEmailNoProduct {
+            get {
+                return ((bool)(this["SendEmailNoProduct"]));
+            }
+        }
     }
 }

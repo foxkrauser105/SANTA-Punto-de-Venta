@@ -54,6 +54,7 @@ namespace SANTA_Punto_de_Venta
                 else if (p[i][1].GetType().Equals(typeof(string))) sqldbtype = SqlDbType.VarChar;
                 else if (p[i][1].GetType().Equals(typeof(double))) sqldbtype = SqlDbType.Float;
                 else if (p[i][1].GetType().Equals(typeof(float))) sqldbtype = SqlDbType.Float;
+                else if (p[i][1].GetType().Equals(typeof(decimal))) sqldbtype = SqlDbType.Decimal;
                 else if (p[i][1].GetType().Equals(typeof(DateTime))) sqldbtype = SqlDbType.DateTime;
                 else sqldbtype = SqlDbType.VarChar;
 

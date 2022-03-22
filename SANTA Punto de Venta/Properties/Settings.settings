@@ -9,5 +9,8 @@
 &lt;/SerializableConnectionString&gt;</DesignTimeValue>
       <Value Profile="(Default)">server = localhost\SQLEXPRESS; database = SANTA; Trusted_Connection = True;</Value>
     </Setting>
+    <Setting Name="SendEmailNoProduct" Type="System.Boolean" Scope="Application">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
