@@ -28,13 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.panelImage = new System.Windows.Forms.Panel();
+            this.buttonShowNot = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panelButtons = new System.Windows.Forms.Panel();
             this.buttonNotificaciones = new System.Windows.Forms.Button();
@@ -46,8 +46,8 @@
             this.buttonVenta = new System.Windows.Forms.Button();
             this.panelPrincipal = new System.Windows.Forms.Panel();
             this.dataGridViewNotificaciones = new System.Windows.Forms.DataGridView();
-            this.timerNotificaciones = new System.Windows.Forms.Timer(this.components);
-            this.buttonShowNot = new System.Windows.Forms.Button();
+            this.lblNotificaciones = new System.Windows.Forms.Label();
+            this.bwNotificaciones = new System.ComponentModel.BackgroundWorker();
             this.panelImage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panelButtons.SuspendLayout();
@@ -63,6 +63,16 @@
             this.panelImage.Name = "panelImage";
             this.panelImage.Size = new System.Drawing.Size(200, 153);
             this.panelImage.TabIndex = 0;
+            // 
+            // buttonShowNot
+            // 
+            this.buttonShowNot.Location = new System.Drawing.Point(21, 127);
+            this.buttonShowNot.Name = "buttonShowNot";
+            this.buttonShowNot.Size = new System.Drawing.Size(155, 23);
+            this.buttonShowNot.TabIndex = 1;
+            this.buttonShowNot.Text = "Ocultar Notificaciones";
+            this.buttonShowNot.UseVisualStyleBackColor = true;
+            this.buttonShowNot.Click += new System.EventHandler(this.buttonShowNot_Click);
             // 
             // pictureBox1
             // 
@@ -210,7 +220,7 @@
             this.panelPrincipal.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(66)))), ((int)(((byte)(91)))));
             this.panelPrincipal.Location = new System.Drawing.Point(200, 0);
             this.panelPrincipal.Name = "panelPrincipal";
-            this.panelPrincipal.Size = new System.Drawing.Size(1103, 680);
+            this.panelPrincipal.Size = new System.Drawing.Size(1103, 640);
             this.panelPrincipal.TabIndex = 2;
             // 
             // dataGridViewNotificaciones
@@ -241,7 +251,7 @@
             this.dataGridViewNotificaciones.DefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridViewNotificaciones.EnableHeadersVisualStyles = false;
             this.dataGridViewNotificaciones.GridColor = System.Drawing.Color.SteelBlue;
-            this.dataGridViewNotificaciones.Location = new System.Drawing.Point(203, 686);
+            this.dataGridViewNotificaciones.Location = new System.Drawing.Point(203, 679);
             this.dataGridViewNotificaciones.MultiSelect = false;
             this.dataGridViewNotificaciones.Name = "dataGridViewNotificaciones";
             this.dataGridViewNotificaciones.ReadOnly = true;
@@ -255,6 +265,7 @@
             dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridViewNotificaciones.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            this.dataGridViewNotificaciones.RowHeadersVisible = false;
             dataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(66)))), ((int)(((byte)(110)))));
             dataGridViewCellStyle4.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             dataGridViewCellStyle4.ForeColor = System.Drawing.Color.White;
@@ -263,49 +274,57 @@
             this.dataGridViewNotificaciones.RowsDefaultCellStyle = dataGridViewCellStyle4;
             this.dataGridViewNotificaciones.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridViewNotificaciones.ShowEditingIcon = false;
-            this.dataGridViewNotificaciones.Size = new System.Drawing.Size(1100, 120);
+            this.dataGridViewNotificaciones.Size = new System.Drawing.Size(1100, 127);
             this.dataGridViewNotificaciones.TabIndex = 55;
             this.dataGridViewNotificaciones.TabStop = false;
-            this.dataGridViewNotificaciones.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewNotificaciones_CellContentClick);
+            this.dataGridViewNotificaciones.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewNotificaciones_CellClick);
+            this.dataGridViewNotificaciones.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewNotificaciones_CellDoubleClick);
+            this.dataGridViewNotificaciones.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewNotificaciones_RowEnter);
+            this.dataGridViewNotificaciones.Scroll += new System.Windows.Forms.ScrollEventHandler(this.dataGridViewNotificaciones_Scroll);
             // 
-            // timerNotificaciones
+            // lblNotificaciones
             // 
-            this.timerNotificaciones.Interval = 10000;
-            this.timerNotificaciones.Tick += new System.EventHandler(this.timerNotificaciones_Tick);
+            this.lblNotificaciones.AutoSize = true;
+            this.lblNotificaciones.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblNotificaciones.ForeColor = System.Drawing.SystemColors.Control;
+            this.lblNotificaciones.Location = new System.Drawing.Point(206, 655);
+            this.lblNotificaciones.Name = "lblNotificaciones";
+            this.lblNotificaciones.Size = new System.Drawing.Size(588, 21);
+            this.lblNotificaciones.TabIndex = 110;
+            this.lblNotificaciones.Text = "Notificaciones. Es importante leer, ya que pudiera ser un cambio relevante";
             // 
-            // buttonShowNot
+            // bwNotificaciones
             // 
-            this.buttonShowNot.Location = new System.Drawing.Point(21, 127);
-            this.buttonShowNot.Name = "buttonShowNot";
-            this.buttonShowNot.Size = new System.Drawing.Size(155, 23);
-            this.buttonShowNot.TabIndex = 1;
-            this.buttonShowNot.Text = "Mostrar Notificaciones";
-            this.buttonShowNot.UseVisualStyleBackColor = true;
-            this.buttonShowNot.Visible = false;
-            this.buttonShowNot.Click += new System.EventHandler(this.buttonShowNot_Click);
+            this.bwNotificaciones.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bwNotificaciones_DoWork);
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(66)))), ((int)(((byte)(91)))));
-            this.ClientSize = new System.Drawing.Size(1304, 681);
+            this.ClientSize = new System.Drawing.Size(1304, 811);
+            this.Controls.Add(this.lblNotificaciones);
             this.Controls.Add(this.dataGridViewNotificaciones);
             this.Controls.Add(this.panelPrincipal);
             this.Controls.Add(this.panelButtons);
             this.Controls.Add(this.panelImage);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
+            this.MaximumSize = new System.Drawing.Size(1320, 850);
+            this.MinimumSize = new System.Drawing.Size(1320, 720);
             this.Name = "Main";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "SANTA Punto de Venta CiberStore";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
             this.Load += new System.EventHandler(this.Main_Load);
+            this.Shown += new System.EventHandler(this.Main_Shown);
             this.panelImage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panelButtons.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewNotificaciones)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -323,8 +342,9 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Button buttonNotificaciones;
         private System.Windows.Forms.DataGridView dataGridViewNotificaciones;
-        private System.Windows.Forms.Timer timerNotificaciones;
         private System.Windows.Forms.Button buttonShowNot;
+        private System.Windows.Forms.Label lblNotificaciones;
+        private System.ComponentModel.BackgroundWorker bwNotificaciones;
     }
 }
 

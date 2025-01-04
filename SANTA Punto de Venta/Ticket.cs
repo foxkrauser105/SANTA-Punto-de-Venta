@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Drawing;
 
 namespace SANTA_Punto_de_Venta
 {
     public class Ticket
     {
         private static StringBuilder linea = new StringBuilder();
-        
+
 
         int maxCaracter = 40, cortar;
 
@@ -17,7 +14,7 @@ namespace SANTA_Punto_de_Venta
         public string lineasGuia()
         {
             string lineasGuion = "";
-            for(int i = 0; i < maxCaracter; i++)
+            for (int i = 0; i < maxCaracter; i++)
             {
                 lineasGuion += "-";
             }
@@ -51,10 +48,10 @@ namespace SANTA_Punto_de_Venta
 
         public void textoIzquierda(string texto)
         {
-            if(texto.Length > maxCaracter)
+            if (texto.Length > maxCaracter)
             {
                 int caracterActual = 0;
-                for(int longitudTexto = texto.Length; longitudTexto > maxCaracter; longitudTexto -= maxCaracter)
+                for (int longitudTexto = texto.Length; longitudTexto > maxCaracter; longitudTexto -= maxCaracter)
                 {
                     linea.AppendLine(texto.Substring(caracterActual, maxCaracter));
                     caracterActual += maxCaracter;
@@ -78,7 +75,7 @@ namespace SANTA_Punto_de_Venta
                     caracterActual += maxCaracter;
                 }
                 string espacios = "";
-                for(int i = 0; i < (maxCaracter - texto.Substring(caracterActual, texto.Length - caracterActual).Length); i++)
+                for (int i = 0; i < (maxCaracter - texto.Substring(caracterActual, texto.Length - caracterActual).Length); i++)
                 {
                     espacios += " ";
                 }
@@ -180,7 +177,7 @@ namespace SANTA_Punto_de_Venta
             valor = total.ToString("#,#.00");
 
             int nroEspacios = maxCaracter - (resumen.Length + valor.Length);
-            for(int i = 0; i < nroEspacios; i++)
+            for (int i = 0; i < nroEspacios; i++)
             {
                 espacios += " ";
             }
@@ -200,7 +197,7 @@ namespace SANTA_Punto_de_Venta
                 {
                     nroEspacios = (5 - cant.ToString().Length);
                     espacios = "";
-                    for(int i = 0; i < nroEspacios; i++)
+                    for (int i = 0; i < nroEspacios; i++)
                     {
                         espacios += " ";
                     }
@@ -223,9 +220,9 @@ namespace SANTA_Punto_de_Venta
                     elemento += espacios + importe.ToString();
 
                     int caracterActual = 0;
-                    for(int longitudTexto = articulo.Length; longitudTexto > 20; longitudTexto -= 20)
+                    for (int longitudTexto = articulo.Length; longitudTexto > 20; longitudTexto -= 20)
                     {
-                        if(bandera == false)
+                        if (bandera == false)
                         {
                             linea.AppendLine(articulo.Substring(caracterActual, 20) + elemento);
                         }
@@ -240,7 +237,7 @@ namespace SANTA_Punto_de_Venta
                 }
                 else
                 {
-                    for(int i = 0; i < (20 - articulo.Length); i++)
+                    for (int i = 0; i < (20 - articulo.Length); i++)
                     {
                         espacios = " ";
                     }
@@ -289,7 +286,7 @@ namespace SANTA_Punto_de_Venta
 
         public void imprimirTicket(string impresora)
         {
-            RawPrinterHelper.SendStringToPrinter(impresora, linea.ToString());         
+            RawPrinterHelper.SendStringToPrinter(impresora, linea.ToString());
             linea.Length = 0;
         }
 

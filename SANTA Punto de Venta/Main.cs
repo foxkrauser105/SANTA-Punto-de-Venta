@@ -1,34 +1,73 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Data.SqlClient;
 using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Management;
-using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using SANTA_Punto_de_Venta.Vistas;
 
 namespace SANTA_Punto_de_Venta
 {
     public partial class Main : Form
     {
-        Ventas ventas;
-        Requisición_Producto requisicion_Producto;
+        #region Variables
 
-        DataTable dtNotificaciones = new DataTable();
-        private int rowIndex = 0;
-  
+        private Ventas _ventas;
+        private Requisición_Producto _requisicionProducto;
+        private int _rowIndex = 0, _scrollBarPositionindex = 0, _currentCellIndex = 0;
+        private bool _screensEnoughHeight = false;
+
+        #endregion
+
+        #region Main
+
         public Main()
         {
             InitializeComponent();
             Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("es-MX", false);
+            _screensEnoughHeight = Screen.AllScreens.Any(s => s.Bounds.Height >= 850);
+        }
+
+        #region Trabajo en Segundo Plano
+
+        /// <summary>
+        /// Evento que inicia el background worker que actualiza las notificaciones del sistema.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Main_Shown(object sender, EventArgs e)
+        {
+            if (this._screensEnoughHeight)
+            {
+                bwNotificaciones.RunWorkerAsync();
+            }
+            else
+            {
+                this.buttonShowNot.PerformClick();
+                this.buttonShowNot.Visible = false;
+            }
         }
 
         /// <summary>
-        /// Metodo que añade una forma al panel al hacer click en uno de los botones del menú principal
+        /// Actualiza el <see cref="DataGridView"/> de notificaciones del sistema cada 10 segundos.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void bwNotificaciones_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+            while (!bwNotificaciones.CancellationPending)
+            {
+                Thread.Sleep(10000);
+                BeginInvoke(new MethodInvoker(ActualizaNotificaciones));
+            }
+
+            e.Cancel = true;
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Metodo que añade una forma al panel al hacer click en uno de los botones del menú principal.
         /// </summary>
         /// <param name="form"></param>
         private void AddFormInPanel(Form fh)
@@ -45,30 +84,135 @@ namespace SANTA_Punto_de_Venta
 
         }
 
-        private void Main_Load(object sender, EventArgs e)
+        /// <summary>
+        /// Obtiene las notificaciones del sistema y las muestra en el <see cref="DataGridView"/> inferior del sistema.
+        /// </summary>
+        /// <returns></returns>
+        private async Task ObtenNotificaciones()
         {
-            var form = Application.OpenForms.OfType<Ventas>().FirstOrDefault();
-            ventas = form ?? new Ventas();
-            AddFormInPanel(ventas);
-            ventas.Focus();
-            ventas.textBoxCodigo.Focus();
+            if (this.dataGridViewNotificaciones.SelectedRows.Count > 0)
+            {
+                this.SetCurrentCellIndex(this.dataGridViewNotificaciones.CurrentCell.ColumnIndex);
+            }
 
-            seleccionDB();
+            this.dataGridViewNotificaciones.SuspendLayout();
+            this.dataGridViewNotificaciones.DataSource = await Task.Run( async () =>
+            {
+                string sqlQuery = @"SELECT [No.], ISNULL(Para, 'General') Para, Mensaje
+                                    FROM (SELECT id_mensaje [No.], (SELECT nombre FROM usuarios WHERE usuclave = n.usuclave_recibe) [Para], n.mensaje [Mensaje]
+                                          FROM   notificaciones n
+                                          WHERE  status = 1) a
+                                    ORDER BY [No.];";
 
-            //timerNotificaciones.Start();
+                return await Utilerias.GetResultsFromQueryAsync(sqlQuery);
+            });
 
+            if (this.dataGridViewNotificaciones.ColumnCount > 0)
+            {
+                this.dataGridViewNotificaciones.AutoResizeColumns();
+                this.dataGridViewNotificaciones.Columns[this.dataGridViewNotificaciones.ColumnCount - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            }
+
+            this.GetRowCellAndScrollIndex();
+            this.dataGridViewNotificaciones.ResumeLayout();
         }
 
+        /// <summary>
+        /// Actualiza las notificaciones del sistema, cuando el background worker lo manda llamar.
+        /// </summary>
+        public async void ActualizaNotificaciones()
+        {
+            this.dataGridViewNotificaciones.Scroll -= dataGridViewNotificaciones_Scroll;
+            await this.ObtenNotificaciones();
+            this.dataGridViewNotificaciones.Scroll -= dataGridViewNotificaciones_Scroll;
+        }
+
+        /// <summary>
+        /// Aplica el valor de las propiedades rowIndex y scrollBarPositionIndex al <see cref="DataGridView"/> de Notificaciones, 
+        /// una vez que se cargan datos al mismo, para evitar que el index del renglón seleccionado en la tabla se pierda.
+        /// </summary>
+        private void GetRowCellAndScrollIndex()
+        {
+
+            if (_rowIndex > -1 && this.dataGridViewNotificaciones.Rows.Count > 0)
+            {
+                this.dataGridViewNotificaciones.Rows[_rowIndex].Selected = true;
+                this.dataGridViewNotificaciones.CurrentCell = dataGridViewNotificaciones.Rows[_rowIndex].Cells[_currentCellIndex];
+
+                if (_scrollBarPositionindex > -1)
+                {
+                    this.dataGridViewNotificaciones.FirstDisplayedScrollingRowIndex = _scrollBarPositionindex;
+                }
+            }
+            else
+            {
+                _scrollBarPositionindex = 0;
+            }
+        }
+
+        /// <summary>
+        /// Obtiene el valor de las propiedades rowIndex, y scrollBarPositionindex del <see cref="DataGridView"/> de Notificaciones,
+        /// cuando el usuario selecciona un renglón.
+        /// </summary>
+        /// <param name="rowIndex">El índice del renglón seleccionado.</param>
+        /// <param name="scrollBarPositionindex">Elíndice del primer renglón mostrado en la tabla.</param>
+        private void SetRowAndScrollBarIndex(int rowIndex, int scrollBarPositionindex)
+        {
+            this._rowIndex = rowIndex;
+            this._scrollBarPositionindex = scrollBarPositionindex;
+        }
+
+        /// <summary>
+        /// Obtiene el valor de la propiedad currentCellIndex del <see cref="DataGridView"/> de Notificaciones,
+        /// cuando el usuario selecciona una celda.
+        /// </summary>
+        /// <param name="currentCellIndex">El índice de la celda seleccionada.</param>
+        private void SetCurrentCellIndex(int currentCellIndex)
+        {
+            this._currentCellIndex = currentCellIndex;
+        }
+
+        #region Eventos
+
+        /// <summary>
+        /// Evento que carga la ventana principal del programa, ademas de las notificaciones del sistema.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void Main_Load(object sender, EventArgs e)
+        {
+            var form = Application.OpenForms.OfType<Ventas>().FirstOrDefault();
+            _ventas = form ?? new Ventas();
+            AddFormInPanel(_ventas);
+            _ventas.Focus();
+            _ventas.textBoxCodigo.Focus();
+
+            if (this._screensEnoughHeight)
+            {
+                await this.ObtenNotificaciones();
+            }
+        }
+
+        /// <summary>
+        /// Evento que carga la forma Venta en el panel principal.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void buttonVenta_Click(object sender, EventArgs e)
         {
             var form = Application.OpenForms.OfType<Ventas>().FirstOrDefault();
-            ventas = form ?? new Ventas();
-            AddFormInPanel(ventas);
+            _ventas = form ?? new Ventas();
+            AddFormInPanel(_ventas);
             panelMove.Top = buttonVenta.Top;
             panelMove.Height = buttonVenta.Height;
-            ventas.textBoxCodigo.Focus();
+            _ventas.textBoxCodigo.Focus();
         }
 
+        /// <summary>
+        /// Evento que carga la forma Productos en el panel principal.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void buttonProductos_Click(object sender, EventArgs e)
         {
             var form = Application.OpenForms.OfType<Productos>().FirstOrDefault();
@@ -78,13 +222,23 @@ namespace SANTA_Punto_de_Venta
             panelMove.Height = buttonProductos.Height;
         }
 
+        /// <summary>
+        /// Evento que carga la forma Venta_Dia en el panel principal.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void buttonVentaDia_Click(object sender, EventArgs e)
-        {           
-            AddFormInPanel(new Venta_Dia());
+        {
+            AddFormInPanel(new Ventas_Dia());
             panelMove.Top = buttonVentaDia.Top;
             panelMove.Height = buttonVentaDia.Height;
         }
 
+        /// <summary>
+        /// Evento que carga la forma Ventas_Hechas en el panel principal.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void buttonVentasHechas_Click(object sender, EventArgs e)
         {
             AddFormInPanel(new Ventas_Hechas());
@@ -92,157 +246,150 @@ namespace SANTA_Punto_de_Venta
             panelMove.Height = buttonVentasHechas.Height;
         }
 
+        /// <summary>
+        /// Evento que carga la forma Requisicion en el panel principal.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void buttonRequisicion_Click(object sender, EventArgs e)
         {
             var form = Application.OpenForms.OfType<Requisición_Producto>().FirstOrDefault();
-            requisicion_Producto = form ?? new Requisición_Producto();
-            AddFormInPanel(requisicion_Producto);
+            _requisicionProducto = form ?? new Requisición_Producto();
+            AddFormInPanel(_requisicionProducto);
             panelMove.Top = buttonRequisicion.Top;
             panelMove.Height = buttonRequisicion.Height;
         }
 
+        /// <summary>
+        /// Evento que carga la forma Notificaciones en el panel principal.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void buttonNotificaciones_Click(object sender, EventArgs e)
         {
-            var form = Application.OpenForms.OfType<Requisición_Producto>().FirstOrDefault();
-            requisicion_Producto = form ?? new Requisición_Producto();
-            AddFormInPanel(requisicion_Producto);
+            AddFormInPanel(new Notificaciones());
             panelMove.Top = buttonNotificaciones.Top;
             panelMove.Height = buttonNotificaciones.Height;
         }
 
+        /// <summary>
+        /// Evento que checa que la forma Venta no tenga artículos en proceso de venta.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
 
-            if (ventas.dataGridViewVenta.RowCount > 0)
+            if (_ventas.dataGridViewVenta.RowCount > 0)
             {
-                if (!panelPrincipal.Controls.Contains(ventas))
+                if (!panelPrincipal.Controls.Contains(_ventas))
                 {
                     buttonVenta.PerformClick();
                 }
-                
-                if(MessageBox.Show("Aún tiene productos en venta. ¿Desea cerrar el programa?", "Pregunta", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+
+                if (MessageBox.Show("Aún tiene productos en venta. ¿Desea cerrar el programa?", "Pregunta", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                 {
                     e.Cancel = true;
                 }
             }
-
-            if (File.Exists(@"..\..\..\documentos\conexiontest.txt"))
-               File.Delete(@"..\..\..\documentos\conexiontest.txt");
         }
 
-        
-
-        private void timerNotificaciones_Tick(object sender, EventArgs e)
+        /// <summary>
+        /// Evento que actualiza los valores de rowIndex, currentCellIndex, y scrollBarPositionIndex, cuando el usuario ingresa a un nuevo renglón del <see cref="DataGridView"/> de Notificaciones.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dataGridViewNotificaciones_RowEnter(object sender, DataGridViewCellEventArgs e)
         {
-            //actualizaNotificaciones();
-        }
-
-        public void actualizaNotificaciones()
-        {
-            try
+            if (this.dataGridViewNotificaciones.SelectedRows.Count > 0)
             {
-                using (SqlConnection openCon = new SqlConnection(Properties.Settings.Default.SANTA_Connection))
+                this.SetRowAndScrollBarIndex(this.dataGridViewNotificaciones.SelectedRows[0].Index, this.dataGridViewNotificaciones.FirstDisplayedScrollingRowIndex);
+                this.SetCurrentCellIndex(this.dataGridViewNotificaciones.CurrentCell.ColumnIndex);
+            }
+        }
+
+        /// <summary>
+        /// Evento que actualiza el valor de scrollBarPositionIndex, cuando el usuario scrollea sobre el <see cref="DataGridView"/> de Notificaciones.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dataGridViewNotificaciones_Scroll(object sender, ScrollEventArgs e)
+        {
+            if (e.ScrollOrientation == ScrollOrientation.VerticalScroll)
+            {
+                _scrollBarPositionindex = this.dataGridViewNotificaciones.FirstDisplayedScrollingRowIndex;
+            }
+        }
+
+        /// <summary>
+        /// Evento que abre la forma de Notificaciones, al hacer doble click sobre un renglón del <see cref="DataGridView"/> de Notificaciones, y muestra información detallada del mensaje seleccionado.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dataGridViewNotificaciones_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                if (!(this.panelPrincipal.Controls[0] is Notificaciones))
                 {
-                    openCon.Open();
-                    SqlTransaction transaction = openCon.BeginTransaction();
-                    SqlDataAdapter select = new SqlDataAdapter(new SqlCommand("SELECT mensaje " +
-                                                                              "FROM   notificaciones " +
-                                                                              "WHERE  status <> 0 " +
-                                                                              "ORDER BY prioridad desc, tipo", openCon, transaction));
-                    dtNotificaciones.Clear();
-                    select.Fill(dtNotificaciones);
-
-                    dataGridViewNotificaciones.DataSource = dtNotificaciones;
-
-                    if (dataGridViewNotificaciones.RowCount > 0)
-                    {
-                        if(rowIndex >= dataGridViewNotificaciones.RowCount)
-                        {
-                            rowIndex = dataGridViewNotificaciones.RowCount - 1;
-                        }
-                        
-                        dataGridViewNotificaciones.CurrentCell = dataGridViewNotificaciones.Rows[rowIndex].Cells[0];
-                        dataGridViewNotificaciones.Rows[rowIndex].Selected = true;
-
-                    }
-                    else
-                    {
-                        rowIndex = 0;
-                    }
+                    this.buttonNotificaciones.PerformClick();
                 }
-            }
-            catch (SqlException)
-            {
-                timerNotificaciones.Stop();
-                MessageBox.Show("Ha ocurrido un problema. Verifica lo siguiente: \n\n- Verifica la conexión a la base de datos y prueba de nuevo", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                timerNotificaciones.Start();
-            }
 
-            catch (ArgumentOutOfRangeException)
-            {
-                timerNotificaciones.Stop();
-                MessageBox.Show("Ha ocurrido un problema. Intente de nuevo", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                timerNotificaciones.Start();
+                Notificaciones notificaciones = (Notificaciones)this.panelPrincipal.Controls[0];
+
+                notificaciones.textBoxNoMensaje.Text = this.dataGridViewNotificaciones.Rows[_rowIndex].Cells["No."].Value.ToString();
+                notificaciones.MuestraInformacionMensajeSeleccionado();
             }
         }
 
-        private void dataGridViewNotificaciones_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        /// <summary>
+        /// Evento que actualiza los valores de rowIndex, currentCellIndex, y scrollBarPositionIndex, cuando el usuario da click en una celda de un renglón del <see cref="DataGridView"/> de Notificaciones.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dataGridViewNotificaciones_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            rowIndex = dataGridViewNotificaciones.SelectedCells[0].RowIndex;
+            if (e.RowIndex >= 0)
+            {
+                this.SetRowAndScrollBarIndex(e.RowIndex, this.dataGridViewNotificaciones.FirstDisplayedScrollingRowIndex);
+                this.SetCurrentCellIndex(e.ColumnIndex);
+            }
         }
 
+        /// <summary>
+        /// Evento que muestra o desaparece las notificaciones al usuario.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void buttonShowNot_Click(object sender, EventArgs e)
         {
-            if(buttonShowNot.Text.Equals("Mostrar Notificaciones"))
+            if (this.buttonShowNot.Text.Equals("Mostrar Notificaciones"))
             {
-                buttonShowNot.Text = "Ocultar Notificaciones";
-                this.Size = new Size(this.Width,850);
+                this.buttonShowNot.Text = "Ocultar Notificaciones";
+                this.Size = new Size(this.Width, 850);
+                this.buttonNotificaciones.Visible = true;
+                this.lblNotificaciones.Visible = true;
+                this.dataGridViewNotificaciones.Visible = true;
                 this.CenterToScreen();
             }
             else
             {
-                buttonShowNot.Text = "Mostrar Notificaciones";
+                this.buttonShowNot.Text = "Mostrar Notificaciones";
+                this.buttonNotificaciones.Visible = false;
+                this.lblNotificaciones.Visible = false;
+                this.dataGridViewNotificaciones.Visible = false;
                 this.Size = new Size(this.Width, 720);
                 this.CenterToScreen();
-            }
-        }
 
-        public void seleccionDB()
-        {
-            ManagementObjectSearcher buscaProcesador = new ManagementObjectSearcher("SELECT Description FROM Win32_DisplayConfiguration");
-            foreach (ManagementObject mo in buscaProcesador.Get())
-            {
-                foreach (PropertyData propiedades in mo.Properties)
+                if (this.panelPrincipal.Controls[0] is Notificaciones)
                 {
-                    //Asi identifico si la instancia es de producción o de pruebas
-                    //Mi PC de pruebas es 
-                    if (propiedades.Value.ToString().Equals("NVIDIA GeForce GTX 1050"))
-                    {
-
-                        ConexionDBSeleccion a = new ConexionDBSeleccion();
-                        a.ShowDialog();
-
-                        try
-                        {
-                            if (!Directory.Exists(@"..\..\..\documentos")) { Directory.CreateDirectory(@"..\..\..\documentos"); }
-                            if (!File.Exists(@"..\..\..\documentos\conexiontest.txt")) { using (var file = File.Create(@"..\..\..\documentos\conexiontest.txt")) { } }
-
-                            using (StreamWriter sw = new StreamWriter(@"..\..\..\documentos\conexiontest.txt"))
-                            {
-
-                                sw.WriteLine(a.db == 0 ? "server = localhost\\SQLEXPRESS; database = SANTA; Trusted_Connection = True;" : "server = 192.168.100.7\\SQLEXPRESS; database = SANTA; uid = sa; pwd = 1234");
-
-                                sw.Close();
-                            }
-                        }
-                        catch (IOException)
-                        {
-                            MessageBox.Show("Ha ocurrido un error. El archivo 'conexiontest.txt' no puedo ser cargado", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            Dispose();
-                        }
-                    }
+                    buttonVenta.PerformClick();
                 }
             }
         }
+
+        #endregion
+
+        #endregion
     }
 }

@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Management;
+﻿using System.Management;
 using System.Net;
 using System.Net.Mail;
-using System.Text;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace SANTA_Punto_de_Venta
@@ -28,7 +23,7 @@ namespace SANTA_Punto_de_Venta
             try
             {
                 string ciber = "CiberStore";
-                
+
                 //Aqui va codigo similar al de abajo para detectar la GPU, pero se quito porque ya no tenia el otro ciber :(sss
 
                 MailMessage email = new MailMessage();
@@ -45,10 +40,10 @@ namespace SANTA_Punto_de_Venta
                         if (!propiedades.Value.ToString().Equals("NVIDIA GTX 1050"))
                         {
                             email.To.Add(new MailAddress("cesare_7maldini@yahoo.com"));
-                        }    
+                        }
                     }
                 }
-                
+
                 email.From = new MailAddress("krauser105@gmail.com", "CiberStore");
                 email.Subject = "Reporte de producto(s) vendido(s) sin registro de cantidad en base de datos en " + ciber;
                 email.Body = "Se registró que el/los producto(s):<br><br>" + prod + "<br>se vendió/vendieron sin tener existencia en " + ciber;
@@ -125,7 +120,8 @@ namespace SANTA_Punto_de_Venta
 
                 return 1;
             }
-            catch (SmtpException) { 
+            catch (SmtpException)
+            {
                 MessageBox.Show("Ha ocurrido un error. Verifica lo siguiente:\n\n- Verifica que el correo no haya sido modificado o tenga alguna alerta de inicio de sesión y prueba de nuevo\n- Verifica que la contraseña no haya sido cambiada. Si es así, avisar a César\n", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return 0;
             }

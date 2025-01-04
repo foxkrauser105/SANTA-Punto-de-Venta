@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -8,7 +9,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>SANTA_Punto_de_Venta</RootNamespace>
     <AssemblyName>SANTA Punto de Venta</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
@@ -28,6 +29,8 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -54,9 +57,28 @@
     <ApplicationIcon>logo.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Management" />
+    <Reference Include="System.Reactive, Version=6.0.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.6.0.1\lib\net472\System.Reactive.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
@@ -64,79 +86,94 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Acceso.cs">
+    <Compile Include="SANTADataSet.cs">
+      <DependentUpon>SANTADataSet.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="SANTADataSet.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SANTADataSet.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Vistas\Acceso.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Acceso.Designer.cs">
+    <Compile Include="Vistas\Acceso.Designer.cs">
       <DependentUpon>Acceso.cs</DependentUpon>
     </Compile>
-    <Compile Include="Accion.cs">
+    <Compile Include="Vistas\Accion.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Accion.Designer.cs">
+    <Compile Include="Vistas\Accion.Designer.cs">
       <DependentUpon>Accion.cs</DependentUpon>
     </Compile>
-    <Compile Include="Accion_Productos.cs">
+    <Compile Include="Vistas\Accion_Productos.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Accion_Productos.Designer.cs">
+    <Compile Include="Vistas\Accion_Productos.Designer.cs">
       <DependentUpon>Accion_Productos.cs</DependentUpon>
     </Compile>
-    <Compile Include="Asignacion_Contraseña.cs">
+    <Compile Include="Vistas\Asignacion_Contraseña.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Asignacion_Contraseña.Designer.cs">
+    <Compile Include="Vistas\Asignacion_Contraseña.Designer.cs">
       <DependentUpon>Asignacion_Contraseña.cs</DependentUpon>
     </Compile>
-    <Compile Include="Añadir_Cantidad.cs">
+    <Compile Include="Vistas\Añadir_Cantidad.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Añadir_Cantidad.Designer.cs">
+    <Compile Include="Vistas\Añadir_Cantidad.Designer.cs">
       <DependentUpon>Añadir_Cantidad.cs</DependentUpon>
     </Compile>
-    <Compile Include="Añadir_Categoria.cs">
+    <Compile Include="Vistas\Añadir_Categoria.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Añadir_Categoria.Designer.cs">
+    <Compile Include="Vistas\Añadir_Categoria.Designer.cs">
       <DependentUpon>Añadir_Categoria.cs</DependentUpon>
     </Compile>
-    <Compile Include="Añadir_Producto.cs">
+    <Compile Include="Vistas\Añadir_Producto.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Añadir_Producto.Designer.cs">
+    <Compile Include="Vistas\Añadir_Producto.Designer.cs">
       <DependentUpon>Añadir_Producto.cs</DependentUpon>
     </Compile>
-    <Compile Include="Buscar_Producto.cs">
+    <Compile Include="Vistas\Buscar_Producto.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Buscar_Producto.Designer.cs">
+    <Compile Include="Vistas\Buscar_Producto.Designer.cs">
       <DependentUpon>Buscar_Producto.cs</DependentUpon>
     </Compile>
-    <Compile Include="Clientes.cs">
+    <Compile Include="cliente.cs">
+      <DependentUpon>SANTADB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Vistas\Clientes.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Clientes.Designer.cs">
+    <Compile Include="Vistas\Clientes.Designer.cs">
       <DependentUpon>Clientes.cs</DependentUpon>
     </Compile>
-    <Compile Include="ConexionDBSeleccion.cs">
+    <Compile Include="Vistas\ConexionDBSeleccion.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ConexionDBSeleccion.Designer.cs">
+    <Compile Include="Vistas\ConexionDBSeleccion.Designer.cs">
       <DependentUpon>ConexionDBSeleccion.cs</DependentUpon>
     </Compile>
-    <Compile Include="Contraseña.cs">
+    <Compile Include="Vistas\Contraseña.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Contraseña.Designer.cs">
+    <Compile Include="Vistas\Contraseña.Designer.cs">
       <DependentUpon>Contraseña.cs</DependentUpon>
     </Compile>
     <Compile Include="Correos.cs" />
-    <Compile Include="Editar_Producto.cs">
+    <Compile Include="descuento.cs">
+      <DependentUpon>SANTADB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Vistas\Editar_Producto.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Editar_Producto.Designer.cs">
+    <Compile Include="Vistas\Editar_Producto.Designer.cs">
       <DependentUpon>Editar_Producto.cs</DependentUpon>
     </Compile>
     <Compile Include="FlexibleMessageBox.cs" />
@@ -146,129 +183,183 @@
     <Compile Include="Main.Designer.cs">
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
-    <Compile Include="Nota_Credito.cs">
+    <Compile Include="notas_credito.cs">
+      <DependentUpon>SANTADB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Vistas\Lista_Valores.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Nota_Credito.Designer.cs">
+    <Compile Include="Vistas\Lista_Valores.Designer.cs">
+      <DependentUpon>Lista_Valores.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Vistas\Nota_Credito.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Vistas\Nota_Credito.Designer.cs">
       <DependentUpon>Nota_Credito.cs</DependentUpon>
     </Compile>
-    <Compile Include="Notificaciones.cs">
+    <Compile Include="Vistas\Notificaciones.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Notificaciones.Designer.cs">
+    <Compile Include="Vistas\Notificaciones.Designer.cs">
       <DependentUpon>Notificaciones.cs</DependentUpon>
     </Compile>
-    <Compile Include="Productos.cs">
+    <Compile Include="ObservableListSource.cs" />
+    <Compile Include="pagos_notas_credito.cs">
+      <DependentUpon>SANTADB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProductContext.cs" />
+    <Compile Include="producto.cs">
+      <DependentUpon>SANTADB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Vistas\Productos.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Productos.Designer.cs">
+    <Compile Include="Vistas\Productos.Designer.cs">
       <DependentUpon>Productos.cs</DependentUpon>
     </Compile>
-    <Compile Include="Productos_Cero.cs">
+    <Compile Include="Vistas\Productos_Cero.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Productos_Cero.Designer.cs">
+    <Compile Include="Vistas\Productos_Cero.Designer.cs">
       <DependentUpon>Productos_Cero.cs</DependentUpon>
     </Compile>
-    <Compile Include="Productos_Inactivos.cs">
+    <Compile Include="Vistas\Productos_Inactivos.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Productos_Inactivos.Designer.cs">
+    <Compile Include="Vistas\Productos_Inactivos.Designer.cs">
       <DependentUpon>Productos_Inactivos.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RawPrinterHelper.cs" />
-    <Compile Include="Registro_Nota_Credito.cs">
+    <Compile Include="registro_notas_credito.cs">
+      <DependentUpon>SANTADB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Vistas\Registro_Nota_Credito.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Registro_Nota_Credito.Designer.cs">
+    <Compile Include="Vistas\Registro_Nota_Credito.Designer.cs">
       <DependentUpon>Registro_Nota_Credito.cs</DependentUpon>
     </Compile>
-    <Compile Include="Requisición_Producto.cs">
+    <Compile Include="registro_ventas.cs">
+      <DependentUpon>SANTADB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Vistas\Requisición_Producto.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Requisición_Producto.Designer.cs">
+    <Compile Include="Vistas\Requisición_Producto.Designer.cs">
       <DependentUpon>Requisición_Producto.cs</DependentUpon>
     </Compile>
+    <Compile Include="SANTADB.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SANTADB.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SANTADB.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SANTADB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SANTADB.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SANTADB.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="SANTADBContext.cs" />
+    <Compile Include="sysdiagram.cs">
+      <DependentUpon>SANTADB.tt</DependentUpon>
+    </Compile>
     <Compile Include="Ticket.cs" />
-    <Compile Include="Usuarios.cs">
+    <Compile Include="usuario.cs">
+      <DependentUpon>SANTADB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Vistas\Usuarios.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Usuarios.Designer.cs">
+    <Compile Include="Vistas\Usuarios.Designer.cs">
       <DependentUpon>Usuarios.cs</DependentUpon>
     </Compile>
     <Compile Include="Utilerias.cs" />
-    <Compile Include="Ventas.cs">
+    <Compile Include="venta.cs">
+      <DependentUpon>SANTADB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Vistas\Ventas.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Ventas.Designer.cs">
+    <Compile Include="Vistas\Ventas.Designer.cs">
       <DependentUpon>Ventas.cs</DependentUpon>
     </Compile>
-    <Compile Include="Ventas_Hechas.cs">
+    <Compile Include="Vistas\Ventas_Hechas.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Ventas_Hechas.Designer.cs">
+    <Compile Include="Vistas\Ventas_Hechas.Designer.cs">
       <DependentUpon>Ventas_Hechas.cs</DependentUpon>
     </Compile>
-    <Compile Include="Venta_Dia.cs">
+    <Compile Include="Vistas\Ventas_Dia.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Venta_Dia.Designer.cs">
-      <DependentUpon>Venta_Dia.cs</DependentUpon>
+    <Compile Include="Vistas\Ventas_Dia.Designer.cs">
+      <DependentUpon>Ventas_Dia.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Acceso.resx">
+    <Compile Include="venta_dia.cs">
+      <DependentUpon>SANTADB.tt</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Vistas\Acceso.resx">
       <DependentUpon>Acceso.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Accion.resx">
+    <EmbeddedResource Include="Vistas\Accion.resx">
       <DependentUpon>Accion.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Accion_Productos.resx">
+    <EmbeddedResource Include="Vistas\Accion_Productos.resx">
       <DependentUpon>Accion_Productos.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Asignacion_Contraseña.resx">
+    <EmbeddedResource Include="Vistas\Asignacion_Contraseña.resx">
       <DependentUpon>Asignacion_Contraseña.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Añadir_Cantidad.resx">
+    <EmbeddedResource Include="Vistas\Añadir_Cantidad.resx">
       <DependentUpon>Añadir_Cantidad.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Añadir_Categoria.resx">
+    <EmbeddedResource Include="Vistas\Añadir_Categoria.resx">
       <DependentUpon>Añadir_Categoria.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Añadir_Producto.resx">
+    <EmbeddedResource Include="Vistas\Añadir_Producto.resx">
       <DependentUpon>Añadir_Producto.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Buscar_Producto.resx">
+    <EmbeddedResource Include="Vistas\Buscar_Producto.resx">
       <DependentUpon>Buscar_Producto.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Clientes.resx">
+    <EmbeddedResource Include="Vistas\Clientes.resx">
       <DependentUpon>Clientes.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ConexionDBSeleccion.resx">
+    <EmbeddedResource Include="Vistas\ConexionDBSeleccion.resx">
       <DependentUpon>ConexionDBSeleccion.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Contraseña.resx">
+    <EmbeddedResource Include="Vistas\Contraseña.resx">
       <DependentUpon>Contraseña.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Editar_Producto.resx">
+    <EmbeddedResource Include="Vistas\Editar_Producto.resx">
       <DependentUpon>Editar_Producto.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Nota_Credito.resx">
+    <EmbeddedResource Include="Vistas\Lista_Valores.resx">
+      <DependentUpon>Lista_Valores.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Vistas\Nota_Credito.resx">
       <DependentUpon>Nota_Credito.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Notificaciones.resx">
+    <EmbeddedResource Include="Vistas\Notificaciones.resx">
       <DependentUpon>Notificaciones.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Productos.resx">
+    <EmbeddedResource Include="Vistas\Productos.resx">
       <DependentUpon>Productos.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Productos_Cero.resx">
+    <EmbeddedResource Include="Vistas\Productos_Cero.resx">
       <DependentUpon>Productos_Cero.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Productos_Inactivos.resx">
+    <EmbeddedResource Include="Vistas\Productos_Inactivos.resx">
       <DependentUpon>Productos_Inactivos.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -281,24 +372,25 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="Registro_Nota_Credito.resx">
+    <EmbeddedResource Include="Vistas\Registro_Nota_Credito.resx">
       <DependentUpon>Registro_Nota_Credito.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Requisición_Producto.resx">
+    <EmbeddedResource Include="Vistas\Requisición_Producto.resx">
       <DependentUpon>Requisición_Producto.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Usuarios.resx">
+    <EmbeddedResource Include="Vistas\Usuarios.resx">
       <DependentUpon>Usuarios.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Ventas.resx">
+    <EmbeddedResource Include="Vistas\Ventas.resx">
       <DependentUpon>Ventas.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Ventas_Hechas.resx">
+    <EmbeddedResource Include="Vistas\Ventas_Hechas.resx">
       <DependentUpon>Ventas_Hechas.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Venta_Dia.resx">
-      <DependentUpon>Venta_Dia.cs</DependentUpon>
+    <EmbeddedResource Include="Vistas\Ventas_Dia.resx">
+      <DependentUpon>Ventas_Dia.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -308,6 +400,24 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <EntityDeploy Include="SANTADB.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>SANTADB.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="SANTADataSet.xsc">
+      <DependentUpon>SANTADataSet.xsd</DependentUpon>
+    </None>
+    <None Include="SANTADataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>SANTADataSet.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="SANTADataSet.xss">
+      <DependentUpon>SANTADataSet.xsd</DependentUpon>
+    </None>
+    <None Include="SANTADB.edmx.diagram">
+      <DependentUpon>SANTADB.edmx</DependentUpon>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -371,6 +481,17 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="logo.ico" />
+    <Content Include="Resources\opcion-de-lista.png" />
+    <Content Include="SANTADB.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>SANTADB.edmx</DependentUpon>
+      <LastGenOutput>SANTADB.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="SANTADB.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>SANTADB.edmx</DependentUpon>
+      <LastGenOutput>SANTADB.cs</LastGenOutput>
+    </Content>
     <None Include="Resources\messages-icon.png" />
     <None Include="Resources\Other-Notifications-Metro-icon.png" />
     <None Include="Resources\Actions-edit-redo-icon %281%29.png" />
@@ -391,5 +512,19 @@
     <None Include="Resources\Status-dialog-error-icon.png" />
     <None Include="Resources\calculator-icon.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\DataSources\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
+  </Target>
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
 </Project>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="bc484fbe76e24283b3f30e5a34f869f1" Name="Diagram1">
+        <EntityTypeShape EntityType="SANTAModel.cliente" Width="1.5" PointX="11" PointY="1.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SANTAModel.descuento" Width="1.5" PointX="3" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SANTAModel.notas_credito" Width="1.5" PointX="5.75" PointY="1.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="SANTAModel.pagos_notas_credito" Width="1.5" PointX="8.75" PointY="6.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="SANTAModel.producto" Width="1.5" PointX="0.75" PointY="5.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="SANTAModel.registro_notas_credito" Width="1.5" PointX="3" PointY="6.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="SANTAModel.registro_ventas" Width="1.5" PointX="6" PointY="5.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="SANTAModel.sysdiagram" Width="1.5" PointX="5.75" PointY="9.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="SANTAModel.usuario" Width="1.5" PointX="8.75" PointY="1.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SANTAModel.venta" Width="1.5" PointX="3.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SANTAModel.venta_dia" Width="1.5" PointX="7.75" PointY="9.375" IsExpanded="true" />
+        <AssociationConnector Association="SANTAModel.FK_clientes_usuarios" ManuallyRouted="false" />
+        <AssociationConnector Association="SANTAModel.FK_descuentos_productos" ManuallyRouted="false" />
+        <AssociationConnector Association="SANTAModel.FK_registro_notas_credito_productos" ManuallyRouted="false" />
+        <AssociationConnector Association="SANTAModel.FK_registro_ventas_productos" ManuallyRouted="false" />
+        <AssociationConnector Association="SANTAModel.FK_registro_ventas_venta" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

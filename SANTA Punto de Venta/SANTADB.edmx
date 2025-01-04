@@ -1,0 +1,693 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="SANTAModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="clientes">
+          <Key>
+            <PropertyRef Name="numcliente" />
+          </Key>
+          <Property Name="numcliente" Type="int" Nullable="false" />
+          <Property Name="nombre" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="aPaterno" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="aMaterno" Type="varchar" MaxLength="30" />
+          <Property Name="calle" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="numeroExt" Type="int" Nullable="false" />
+          <Property Name="numeroInt" Type="int" />
+          <Property Name="colonia" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="telefono" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="usuclaveUltAct" Type="varchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <EntityType Name="descuentos">
+          <Key>
+            <PropertyRef Name="id_producto" />
+          </Key>
+          <Property Name="id_producto" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="cantidadMinima" Type="float" Nullable="false" />
+          <Property Name="precioDescuento" Type="decimal" Precision="16" Scale="2" />
+          <Property Name="status" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="notas_credito">
+          <Key>
+            <PropertyRef Name="numcliente" />
+            <PropertyRef Name="ncfolio" />
+          </Key>
+          <Property Name="numcliente" Type="int" Nullable="false" />
+          <Property Name="ncfolio" Type="int" Nullable="false" />
+          <Property Name="status" Type="varchar" MaxLength="2" Nullable="false" />
+          <Property Name="fechaAlta" Type="datetime" Nullable="false" />
+          <Property Name="fechaCompromiso" Type="date" Nullable="false" />
+          <Property Name="monto" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="montoPagado" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+        </EntityType>
+        <EntityType Name="pagos_notas_credito">
+          <Key>
+            <PropertyRef Name="numcliente" />
+            <PropertyRef Name="ncfolio" />
+            <PropertyRef Name="pago" />
+          </Key>
+          <Property Name="numcliente" Type="int" Nullable="false" />
+          <Property Name="ncfolio" Type="int" Nullable="false" />
+          <Property Name="pago" Type="int" Nullable="false" />
+          <Property Name="importe" Type="decimal" Precision="7" Scale="2" Nullable="false" />
+          <Property Name="fecha" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="productos">
+          <Key>
+            <PropertyRef Name="id_producto" />
+          </Key>
+          <Property Name="id_producto" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="nombre" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="marca" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="categoria" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="cantidad" Type="float" Nullable="false" />
+          <Property Name="precio" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="status" Type="int" Nullable="false" />
+          <Property Name="fechaultact" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="registro_notas_credito">
+          <Key>
+            <PropertyRef Name="numcliente" />
+            <PropertyRef Name="ncfolio" />
+            <PropertyRef Name="detalle" />
+          </Key>
+          <Property Name="numcliente" Type="int" Nullable="false" />
+          <Property Name="ncfolio" Type="int" Nullable="false" />
+          <Property Name="detalle" Type="int" Nullable="false" />
+          <Property Name="id_producto" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="cantidad" Type="float" Nullable="false" />
+          <Property Name="precio" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="importe" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="fechaSurtido" Type="datetime" Nullable="false" />
+          <Property Name="descuento" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="registro_ventas">
+          <Key>
+            <PropertyRef Name="id_registro" />
+          </Key>
+          <Property Name="id_registro" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_venta" Type="int" Nullable="false" />
+          <Property Name="id_producto" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="precio" Type="decimal" Precision="16" Scale="2" />
+          <Property Name="cantidad" Type="float" Nullable="false" />
+          <Property Name="descuento" Type="int" />
+          <Property Name="numcliente" Type="int" />
+          <Property Name="ncfolio" Type="int" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="usuarios">
+          <Key>
+            <PropertyRef Name="usuclave" />
+          </Key>
+          <Property Name="usuclave" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="nombre" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="aPaterno" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="aMaterno" Type="varchar" MaxLength="30" />
+          <Property Name="pass" Type="varbinary(max)" />
+          <Property Name="fechaAlta" Type="datetime" Nullable="false" />
+          <Property Name="status" Type="int" Nullable="false" />
+          <Property Name="telefono" Type="varchar" MaxLength="15" />
+          <Property Name="fechaUltAct" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="venta">
+          <Key>
+            <PropertyRef Name="id_venta" />
+          </Key>
+          <Property Name="id_venta" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="venta" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="fecha" Type="date" Nullable="false" />
+        </EntityType>
+        <EntityType Name="venta_dia">
+          <Key>
+            <PropertyRef Name="id_ventadia" />
+          </Key>
+          <Property Name="id_ventadia" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="inicio" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="monedas" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="uso_monedas" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="proveedores" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="gasto" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="quedo" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="saldo_inicial" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="saldo_final" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="caja" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="venta_saldo" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="venta_abarrote" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="total" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="final" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="fecha" Type="date" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_clientes_usuarios">
+          <End Role="usuarios" Type="Self.usuarios" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="clientes" Type="Self.clientes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="usuarios">
+              <PropertyRef Name="usuclave" />
+            </Principal>
+            <Dependent Role="clientes">
+              <PropertyRef Name="usuclaveUltAct" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_descuentos_productos">
+          <End Role="productos" Type="Self.productos" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="descuentos" Type="Self.descuentos" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="productos">
+              <PropertyRef Name="id_producto" />
+            </Principal>
+            <Dependent Role="descuentos">
+              <PropertyRef Name="id_producto" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_registro_notas_credito_productos">
+          <End Role="productos" Type="Self.productos" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="registro_notas_credito" Type="Self.registro_notas_credito" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="productos">
+              <PropertyRef Name="id_producto" />
+            </Principal>
+            <Dependent Role="registro_notas_credito">
+              <PropertyRef Name="id_producto" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_registro_ventas_productos">
+          <End Role="productos" Type="Self.productos" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="registro_ventas" Type="Self.registro_ventas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="productos">
+              <PropertyRef Name="id_producto" />
+            </Principal>
+            <Dependent Role="registro_ventas">
+              <PropertyRef Name="id_producto" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_registro_ventas_venta">
+          <End Role="venta" Type="Self.venta" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="registro_ventas" Type="Self.registro_ventas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="venta">
+              <PropertyRef Name="id_venta" />
+            </Principal>
+            <Dependent Role="registro_ventas">
+              <PropertyRef Name="id_venta" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SANTAModelStoreContainer">
+          <EntitySet Name="clientes" EntityType="Self.clientes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="descuentos" EntityType="Self.descuentos" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="notas_credito" EntityType="Self.notas_credito" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="pagos_notas_credito" EntityType="Self.pagos_notas_credito" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="productos" EntityType="Self.productos" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="registro_notas_credito" EntityType="Self.registro_notas_credito" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="registro_ventas" EntityType="Self.registro_ventas" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="usuarios" EntityType="Self.usuarios" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="venta" EntityType="Self.venta" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="venta_dia" EntityType="Self.venta_dia" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_clientes_usuarios" Association="Self.FK_clientes_usuarios">
+            <End Role="usuarios" EntitySet="usuarios" />
+            <End Role="clientes" EntitySet="clientes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_descuentos_productos" Association="Self.FK_descuentos_productos">
+            <End Role="productos" EntitySet="productos" />
+            <End Role="descuentos" EntitySet="descuentos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_registro_notas_credito_productos" Association="Self.FK_registro_notas_credito_productos">
+            <End Role="productos" EntitySet="productos" />
+            <End Role="registro_notas_credito" EntitySet="registro_notas_credito" />
+          </AssociationSet>
+          <AssociationSet Name="FK_registro_ventas_productos" Association="Self.FK_registro_ventas_productos">
+            <End Role="productos" EntitySet="productos" />
+            <End Role="registro_ventas" EntitySet="registro_ventas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_registro_ventas_venta" Association="Self.FK_registro_ventas_venta">
+            <End Role="venta" EntitySet="venta" />
+            <End Role="registro_ventas" EntitySet="registro_ventas" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="SANTAModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="cliente">
+          <Key>
+            <PropertyRef Name="numcliente" />
+          </Key>
+          <Property Name="numcliente" Type="Int32" Nullable="false" />
+          <Property Name="nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="aPaterno" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="aMaterno" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="calle" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="numeroExt" Type="Int32" Nullable="false" />
+          <Property Name="numeroInt" Type="Int32" />
+          <Property Name="colonia" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="telefono" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="usuclaveUltAct" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="usuario" Relationship="Self.FK_clientes_usuarios" FromRole="clientes" ToRole="usuarios" />
+        </EntityType>
+        <EntityType Name="descuento">
+          <Key>
+            <PropertyRef Name="id_producto" />
+          </Key>
+          <Property Name="id_producto" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="cantidadMinima" Type="Double" Nullable="false" />
+          <Property Name="precioDescuento" Type="Decimal" Precision="16" Scale="2" />
+          <Property Name="status" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="producto" Relationship="Self.FK_descuentos_productos" FromRole="descuentos" ToRole="productos" />
+        </EntityType>
+        <EntityType Name="notas_credito">
+          <Key>
+            <PropertyRef Name="numcliente" />
+            <PropertyRef Name="ncfolio" />
+          </Key>
+          <Property Name="numcliente" Type="Int32" Nullable="false" />
+          <Property Name="ncfolio" Type="Int32" Nullable="false" />
+          <Property Name="status" Type="String" MaxLength="2" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="fechaAlta" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="fechaCompromiso" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="monto" Type="Decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="montoPagado" Type="Decimal" Precision="16" Scale="2" Nullable="false" />
+        </EntityType>
+        <EntityType Name="pagos_notas_credito">
+          <Key>
+            <PropertyRef Name="numcliente" />
+            <PropertyRef Name="ncfolio" />
+            <PropertyRef Name="pago" />
+          </Key>
+          <Property Name="numcliente" Type="Int32" Nullable="false" />
+          <Property Name="ncfolio" Type="Int32" Nullable="false" />
+          <Property Name="pago" Type="Int32" Nullable="false" />
+          <Property Name="importe" Type="Decimal" Precision="7" Scale="2" Nullable="false" />
+          <Property Name="fecha" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="producto">
+          <Key>
+            <PropertyRef Name="id_producto" />
+          </Key>
+          <Property Name="id_producto" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="nombre" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="marca" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="categoria" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="cantidad" Type="Double" Nullable="false" />
+          <Property Name="precio" Type="Decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="status" Type="Int32" Nullable="false" />
+          <Property Name="fechaultact" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="descuento" Relationship="Self.FK_descuentos_productos" FromRole="productos" ToRole="descuentos" />
+          <NavigationProperty Name="registro_notas_credito" Relationship="Self.FK_registro_notas_credito_productos" FromRole="productos" ToRole="registro_notas_credito" />
+          <NavigationProperty Name="registro_ventas" Relationship="Self.FK_registro_ventas_productos" FromRole="productos" ToRole="registro_ventas" />
+        </EntityType>
+        <EntityType Name="registro_notas_credito">
+          <Key>
+            <PropertyRef Name="numcliente" />
+            <PropertyRef Name="ncfolio" />
+            <PropertyRef Name="detalle" />
+          </Key>
+          <Property Name="numcliente" Type="Int32" Nullable="false" />
+          <Property Name="ncfolio" Type="Int32" Nullable="false" />
+          <Property Name="detalle" Type="Int32" Nullable="false" />
+          <Property Name="id_producto" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="cantidad" Type="Double" Nullable="false" />
+          <Property Name="precio" Type="Decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="importe" Type="Decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="fechaSurtido" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="descuento" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="producto" Relationship="Self.FK_registro_notas_credito_productos" FromRole="registro_notas_credito" ToRole="productos" />
+        </EntityType>
+        <EntityType Name="registro_ventas">
+          <Key>
+            <PropertyRef Name="id_registro" />
+          </Key>
+          <Property Name="id_registro" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_venta" Type="Int32" Nullable="false" />
+          <Property Name="id_producto" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="precio" Type="Decimal" Precision="16" Scale="2" />
+          <Property Name="cantidad" Type="Double" Nullable="false" />
+          <Property Name="descuento" Type="Int32" />
+          <Property Name="numcliente" Type="Int32" />
+          <Property Name="ncfolio" Type="Int32" />
+          <NavigationProperty Name="producto" Relationship="Self.FK_registro_ventas_productos" FromRole="registro_ventas" ToRole="productos" />
+          <NavigationProperty Name="venta" Relationship="Self.FK_registro_ventas_venta" FromRole="registro_ventas" ToRole="venta" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="usuario">
+          <Key>
+            <PropertyRef Name="usuclave" />
+          </Key>
+          <Property Name="usuclave" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="aPaterno" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="aMaterno" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="pass" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="fechaAlta" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="status" Type="Int32" Nullable="false" />
+          <Property Name="telefono" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="fechaUltAct" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="clientes" Relationship="Self.FK_clientes_usuarios" FromRole="usuarios" ToRole="clientes" />
+        </EntityType>
+        <EntityType Name="venta">
+          <Key>
+            <PropertyRef Name="id_venta" />
+          </Key>
+          <Property Name="id_venta" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="venta1" Type="Decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="fecha" Type="DateTime" Nullable="false" Precision="0" />
+          <NavigationProperty Name="registro_ventas" Relationship="Self.FK_registro_ventas_venta" FromRole="venta" ToRole="registro_ventas" />
+        </EntityType>
+        <EntityType Name="venta_dia">
+          <Key>
+            <PropertyRef Name="id_ventadia" />
+          </Key>
+          <Property Name="id_ventadia" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="inicio" Type="Decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="monedas" Type="Decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="uso_monedas" Type="Decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="proveedores" Type="Decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="gasto" Type="Decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="quedo" Type="Decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="saldo_inicial" Type="Decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="saldo_final" Type="Decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="caja" Type="Decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="venta_saldo" Type="Decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="venta_abarrote" Type="Decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="total" Type="Decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="final" Type="Decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="fecha" Type="DateTime" Nullable="false" Precision="0" />
+        </EntityType>
+        <Association Name="FK_clientes_usuarios">
+          <End Role="usuarios" Type="Self.usuario" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="clientes" Type="Self.cliente" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="usuarios">
+              <PropertyRef Name="usuclave" />
+            </Principal>
+            <Dependent Role="clientes">
+              <PropertyRef Name="usuclaveUltAct" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_descuentos_productos">
+          <End Role="productos" Type="Self.producto" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="descuentos" Type="Self.descuento" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="productos">
+              <PropertyRef Name="id_producto" />
+            </Principal>
+            <Dependent Role="descuentos">
+              <PropertyRef Name="id_producto" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_registro_notas_credito_productos">
+          <End Role="productos" Type="Self.producto" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="registro_notas_credito" Type="Self.registro_notas_credito" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="productos">
+              <PropertyRef Name="id_producto" />
+            </Principal>
+            <Dependent Role="registro_notas_credito">
+              <PropertyRef Name="id_producto" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_registro_ventas_productos">
+          <End Role="productos" Type="Self.producto" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="registro_ventas" Type="Self.registro_ventas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="productos">
+              <PropertyRef Name="id_producto" />
+            </Principal>
+            <Dependent Role="registro_ventas">
+              <PropertyRef Name="id_producto" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_registro_ventas_venta">
+          <End Role="venta" Type="Self.venta" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="registro_ventas" Type="Self.registro_ventas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="venta">
+              <PropertyRef Name="id_venta" />
+            </Principal>
+            <Dependent Role="registro_ventas">
+              <PropertyRef Name="id_venta" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SANTAEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="clientes" EntityType="Self.cliente" />
+          <EntitySet Name="descuentos" EntityType="Self.descuento" />
+          <EntitySet Name="notas_credito" EntityType="Self.notas_credito" />
+          <EntitySet Name="pagos_notas_credito" EntityType="Self.pagos_notas_credito" />
+          <EntitySet Name="productos" EntityType="Self.producto" />
+          <EntitySet Name="registro_notas_credito" EntityType="Self.registro_notas_credito" />
+          <EntitySet Name="registro_ventas" EntityType="Self.registro_ventas" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+          <EntitySet Name="usuarios" EntityType="Self.usuario" />
+          <EntitySet Name="ventas" EntityType="Self.venta" />
+          <EntitySet Name="venta_dia" EntityType="Self.venta_dia" />
+          <AssociationSet Name="FK_clientes_usuarios" Association="Self.FK_clientes_usuarios">
+            <End Role="usuarios" EntitySet="usuarios" />
+            <End Role="clientes" EntitySet="clientes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_descuentos_productos" Association="Self.FK_descuentos_productos">
+            <End Role="productos" EntitySet="productos" />
+            <End Role="descuentos" EntitySet="descuentos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_registro_notas_credito_productos" Association="Self.FK_registro_notas_credito_productos">
+            <End Role="productos" EntitySet="productos" />
+            <End Role="registro_notas_credito" EntitySet="registro_notas_credito" />
+          </AssociationSet>
+          <AssociationSet Name="FK_registro_ventas_productos" Association="Self.FK_registro_ventas_productos">
+            <End Role="productos" EntitySet="productos" />
+            <End Role="registro_ventas" EntitySet="registro_ventas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_registro_ventas_venta" Association="Self.FK_registro_ventas_venta">
+            <End Role="venta" EntitySet="ventas" />
+            <End Role="registro_ventas" EntitySet="registro_ventas" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="SANTAModelStoreContainer" CdmEntityContainer="SANTAEntities">
+          <EntitySetMapping Name="clientes">
+            <EntityTypeMapping TypeName="SANTAModel.cliente">
+              <MappingFragment StoreEntitySet="clientes">
+                <ScalarProperty Name="numcliente" ColumnName="numcliente" />
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="aPaterno" ColumnName="aPaterno" />
+                <ScalarProperty Name="aMaterno" ColumnName="aMaterno" />
+                <ScalarProperty Name="calle" ColumnName="calle" />
+                <ScalarProperty Name="numeroExt" ColumnName="numeroExt" />
+                <ScalarProperty Name="numeroInt" ColumnName="numeroInt" />
+                <ScalarProperty Name="colonia" ColumnName="colonia" />
+                <ScalarProperty Name="telefono" ColumnName="telefono" />
+                <ScalarProperty Name="usuclaveUltAct" ColumnName="usuclaveUltAct" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="descuentos">
+            <EntityTypeMapping TypeName="SANTAModel.descuento">
+              <MappingFragment StoreEntitySet="descuentos">
+                <ScalarProperty Name="id_producto" ColumnName="id_producto" />
+                <ScalarProperty Name="cantidadMinima" ColumnName="cantidadMinima" />
+                <ScalarProperty Name="precioDescuento" ColumnName="precioDescuento" />
+                <ScalarProperty Name="status" ColumnName="status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="notas_credito">
+            <EntityTypeMapping TypeName="SANTAModel.notas_credito">
+              <MappingFragment StoreEntitySet="notas_credito">
+                <ScalarProperty Name="numcliente" ColumnName="numcliente" />
+                <ScalarProperty Name="ncfolio" ColumnName="ncfolio" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="fechaAlta" ColumnName="fechaAlta" />
+                <ScalarProperty Name="fechaCompromiso" ColumnName="fechaCompromiso" />
+                <ScalarProperty Name="monto" ColumnName="monto" />
+                <ScalarProperty Name="montoPagado" ColumnName="montoPagado" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="pagos_notas_credito">
+            <EntityTypeMapping TypeName="SANTAModel.pagos_notas_credito">
+              <MappingFragment StoreEntitySet="pagos_notas_credito">
+                <ScalarProperty Name="numcliente" ColumnName="numcliente" />
+                <ScalarProperty Name="ncfolio" ColumnName="ncfolio" />
+                <ScalarProperty Name="pago" ColumnName="pago" />
+                <ScalarProperty Name="importe" ColumnName="importe" />
+                <ScalarProperty Name="fecha" ColumnName="fecha" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="productos">
+            <EntityTypeMapping TypeName="SANTAModel.producto">
+              <MappingFragment StoreEntitySet="productos">
+                <ScalarProperty Name="id_producto" ColumnName="id_producto" />
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="marca" ColumnName="marca" />
+                <ScalarProperty Name="categoria" ColumnName="categoria" />
+                <ScalarProperty Name="cantidad" ColumnName="cantidad" />
+                <ScalarProperty Name="precio" ColumnName="precio" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="fechaultact" ColumnName="fechaultact" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="registro_notas_credito">
+            <EntityTypeMapping TypeName="SANTAModel.registro_notas_credito">
+              <MappingFragment StoreEntitySet="registro_notas_credito">
+                <ScalarProperty Name="numcliente" ColumnName="numcliente" />
+                <ScalarProperty Name="ncfolio" ColumnName="ncfolio" />
+                <ScalarProperty Name="detalle" ColumnName="detalle" />
+                <ScalarProperty Name="id_producto" ColumnName="id_producto" />
+                <ScalarProperty Name="cantidad" ColumnName="cantidad" />
+                <ScalarProperty Name="precio" ColumnName="precio" />
+                <ScalarProperty Name="importe" ColumnName="importe" />
+                <ScalarProperty Name="fechaSurtido" ColumnName="fechaSurtido" />
+                <ScalarProperty Name="descuento" ColumnName="descuento" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="registro_ventas">
+            <EntityTypeMapping TypeName="SANTAModel.registro_ventas">
+              <MappingFragment StoreEntitySet="registro_ventas">
+                <ScalarProperty Name="id_registro" ColumnName="id_registro" />
+                <ScalarProperty Name="id_venta" ColumnName="id_venta" />
+                <ScalarProperty Name="id_producto" ColumnName="id_producto" />
+                <ScalarProperty Name="precio" ColumnName="precio" />
+                <ScalarProperty Name="cantidad" ColumnName="cantidad" />
+                <ScalarProperty Name="descuento" ColumnName="descuento" />
+                <ScalarProperty Name="numcliente" ColumnName="numcliente" />
+                <ScalarProperty Name="ncfolio" ColumnName="ncfolio" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="SANTAModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="usuarios">
+            <EntityTypeMapping TypeName="SANTAModel.usuario">
+              <MappingFragment StoreEntitySet="usuarios">
+                <ScalarProperty Name="usuclave" ColumnName="usuclave" />
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="aPaterno" ColumnName="aPaterno" />
+                <ScalarProperty Name="aMaterno" ColumnName="aMaterno" />
+                <ScalarProperty Name="pass" ColumnName="pass" />
+                <ScalarProperty Name="fechaAlta" ColumnName="fechaAlta" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="telefono" ColumnName="telefono" />
+                <ScalarProperty Name="fechaUltAct" ColumnName="fechaUltAct" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ventas">
+            <EntityTypeMapping TypeName="SANTAModel.venta">
+              <MappingFragment StoreEntitySet="venta">
+                <ScalarProperty Name="id_venta" ColumnName="id_venta" />
+                <ScalarProperty Name="venta1" ColumnName="venta" />
+                <ScalarProperty Name="fecha" ColumnName="fecha" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="venta_dia">
+            <EntityTypeMapping TypeName="SANTAModel.venta_dia">
+              <MappingFragment StoreEntitySet="venta_dia">
+                <ScalarProperty Name="id_ventadia" ColumnName="id_ventadia" />
+                <ScalarProperty Name="inicio" ColumnName="inicio" />
+                <ScalarProperty Name="monedas" ColumnName="monedas" />
+                <ScalarProperty Name="uso_monedas" ColumnName="uso_monedas" />
+                <ScalarProperty Name="proveedores" ColumnName="proveedores" />
+                <ScalarProperty Name="gasto" ColumnName="gasto" />
+                <ScalarProperty Name="quedo" ColumnName="quedo" />
+                <ScalarProperty Name="saldo_inicial" ColumnName="saldo_inicial" />
+                <ScalarProperty Name="saldo_final" ColumnName="saldo_final" />
+                <ScalarProperty Name="caja" ColumnName="caja" />
+                <ScalarProperty Name="venta_saldo" ColumnName="venta_saldo" />
+                <ScalarProperty Name="venta_abarrote" ColumnName="venta_abarrote" />
+                <ScalarProperty Name="total" ColumnName="total" />
+                <ScalarProperty Name="final" ColumnName="final" />
+                <ScalarProperty Name="fecha" ColumnName="fecha" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
