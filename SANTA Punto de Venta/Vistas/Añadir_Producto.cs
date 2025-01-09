@@ -1,6 +1,8 @@
 ﻿using JR.Utils.GUI.Forms;
 using System;
+using System.Data;
 using System.Data.Entity.Validation;
+using System.Data.SqlClient;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -45,7 +47,7 @@ namespace SANTA_Punto_de_Venta.Vistas
                     return;
                 }
 
-                using (var db = new SANTADBContext())
+                /*using (var db = new SANTADBContext())
                 {
 
                     if (db.productos.AsNoTracking().SingleOrDefault(b => b.id_producto == textBoxCodigo.Text.Trim()) != null)
@@ -115,77 +117,79 @@ namespace SANTA_Punto_de_Venta.Vistas
                             return;
                         }
                     }
-                }
+                }*/
 
 
                 //var prod = new SANTADBObject().productos.AsNoTracking().SingleOrDefault(b => b.id_producto == textBoxCodigo.Text.Trim());
 
                 //prod.cantidad = 100;
 
+                //Si el elemento ya existe no hace nada
+                using (SqlConnection openCon = new SqlConnection(Properties.Settings.Default.SANTA_Connection))
+                {
+                    openCon.Open();
+                    SqlTransaction transaction = openCon.BeginTransaction();
 
+                    try
+                    {
 
-                ////Si el elemento ya existe no hace nada
-                //using (SqlConnection openCon = new SqlConnection(Properties.Settings.Default.SANTA_Connection))
-                //{
-                //    openCon.Open();
-                //    SqlTransaction transaction = openCon.BeginTransaction();
-                //
-                //    try
-                //    {
-                //
-                //        SqlDataAdapter select = new SqlDataAdapter(new SqlCommand("SELECT COUNT(id_producto) " +
-                //                                                                  "FROM   productos " +
-                //                                                                  "WHERE  id_producto = '" + textBoxCodigo.Text.ToUpper().Trim() + "'", openCon, transaction));
-                //
-                //        DataTable dtProductos = new DataTable();
-                //        select.Fill(dtProductos);
-                //
-                //        if (int.Parse(dtProductos.Rows[0][0].ToString()) > 0)
-                //        {
-                //            MessageBox.Show("El producto ya existe, favor de verificar el código de barras", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //        }
-                //        //Si no existe procedemos a darlo de alta
-                //        else
-                //        {
-                //            //Si se escoge si, se da de alta el producto
-                //            if (MessageBox.Show("¿Estás seguro de que quieres añadir '" + textBoxNombre.Text + "' a la base de datos?", "Pregunta", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                //            {
-                //
-                //                using (SqlCommand queryAdd = new SqlCommand("INSERT INTO productos (id_producto,  nombre,   marca, " +
-                //                                                            "                       categoria,   cantidad,  precio) " +
-                //                                                            "VALUES                (@id_producto, @nombre,  @marca, " +
-                //                                                            "                       @categoria,  @cantidad, @precio)", openCon, transaction))
-                //                {
-                //                    queryAdd.Parameters.Add("@id_producto", SqlDbType.VarChar).Value = textBoxCodigo.Text.ToUpper().Trim();
-                //                    queryAdd.Parameters.Add("@nombre",      SqlDbType.VarChar).Value = textBoxNombre.Text.Trim();
-                //                    queryAdd.Parameters.Add("@marca",       SqlDbType.VarChar).Value = textBoxMarca.Text.Trim();
-                //                    queryAdd.Parameters.Add("@categoria",   SqlDbType.VarChar).Value = comboBoxCategoria.Text;
-                //                    queryAdd.Parameters.Add("@cantidad",    SqlDbType.Float).Value   = textBoxCantidad.Text;
-                //                    queryAdd.Parameters.Add("@precio",      SqlDbType.Decimal).Value = decimal.Round(decimal.Parse(textBoxPrecio.Text), 2);
-                //
-                //                    queryAdd.ExecuteNonQuery();
-                //
-                //                    transaction.Commit();
-                //
-                //                    MessageBox.Show("'" + textBoxNombre.Text + "' ha sido añadido correctamente a la base de datos", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                //                    cleanAll();
-                //                    textBoxCodigo.Focus();
-                //                    añadido = true;
-                //
-                //                    if (anadidoVenta)
-                //                    {
-                //                        Dispose();
-                //                    }
-                //                }
-                //            }
-                //        }
-                //    }
-                //    catch (SqlException)
-                //    {
-                //        transaction.Rollback();
-                //        MessageBox.Show("Ha ocurrido un error. Verifica lo siguiente: \n\n- Verifica si la base de datos está en linea\n- Verifica que la información en los campos sea correcta (Ejem. letras en los precios)", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //    } 
-                //}
+                        SqlCommand command = new SqlCommand(@"SELECT COUNT(id_producto) 
+                                                              FROM   productos
+                                                              WHERE  id_producto = @IdProducto;", openCon, transaction);
+
+                        command.Parameters.Add("@IdProducto", SqlDbType.VarChar).Value = textBoxCodigo.Text.ToUpper().Trim();
+
+                        SqlDataAdapter select = new SqlDataAdapter(command);
+
+                        DataTable dtProductos = new DataTable();
+                        select.Fill(dtProductos);
+
+                        if (int.Parse(dtProductos.Rows[0][0].ToString()) > 0)
+                        {
+                            MessageBox.Show("El producto ya existe, favor de verificar el código de barras.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                        //Si no existe procedemos a darlo de alta
+                        else
+                        {
+                            //Si se escoge si, se da de alta el producto
+                            if (MessageBox.Show($"¿Estás seguro de que quieres añadir '{textBoxNombre.Text}' a la base de datos?", "Pregunta", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                            {
+
+                                using (SqlCommand queryAdd = new SqlCommand("INSERT INTO productos (id_producto,  nombre,   marca, " +
+                                                                            "                       categoria,   cantidad,  precio) " +
+                                                                            "VALUES                (@id_producto, @nombre,  @marca, " +
+                                                                            "                       @categoria,  @cantidad, @precio)", openCon, transaction))
+                                {
+                                    queryAdd.Parameters.Add("@id_producto", SqlDbType.VarChar).Value = textBoxCodigo.Text.ToUpper().Trim();
+                                    queryAdd.Parameters.Add("@nombre", SqlDbType.VarChar).Value = textBoxNombre.Text.Trim();
+                                    queryAdd.Parameters.Add("@marca", SqlDbType.VarChar).Value = textBoxMarca.Text.Trim();
+                                    queryAdd.Parameters.Add("@categoria", SqlDbType.VarChar).Value = comboBoxCategoria.Text;
+                                    queryAdd.Parameters.Add("@cantidad", SqlDbType.Float).Value = textBoxCantidad.Text;
+                                    queryAdd.Parameters.Add("@precio", SqlDbType.Decimal).Value = decimal.Round(decimal.Parse(textBoxPrecio.Text), 2);
+
+                                    queryAdd.ExecuteNonQuery();
+
+                                    transaction.Commit();
+
+                                    MessageBox.Show($"'{textBoxNombre.Text}' ha sido añadido correctamente a la base de datos.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    cleanAll();
+                                    textBoxCodigo.Focus();
+                                    añadido = true;
+
+                                    if (anadidoVenta)
+                                    {
+                                        Dispose();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch (SqlException)
+                    {
+                        transaction.Rollback();
+                        MessageBox.Show("Ha ocurrido un error. Verifica lo siguiente: \n\n- Verifica si la base de datos está en linea\n- Verifica que la información en los campos sea correcta (Ejem. letras en los precios)", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
 
             }
         }
