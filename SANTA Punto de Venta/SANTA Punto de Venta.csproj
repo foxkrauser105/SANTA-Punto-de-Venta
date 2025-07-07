@@ -404,6 +404,7 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>SANTADB.Designer.cs</LastGenOutput>
     </EntityDeploy>
+    <None Include="README.md" />
     <None Include="SANTADataSet.xsc">
       <DependentUpon>SANTADataSet.xsd</DependentUpon>
     </None>
